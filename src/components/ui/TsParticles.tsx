@@ -29,29 +29,29 @@ export function TsParticles({ id = "tsparticles", className }: TsParticlesProps)
       fpsLimit: 60,
       detectRetina: true,
       particles: {
-        number: { value: 70, density: { enable: true } },
-        color: { value: ["#f5b042", "#ff6b4a", "#ffd27a"] },
+        number: { value: 64, density: { enable: true } },
+        color: { value: ["#4f46e5", "#38bdf8", "#818cf8"] },
         links: {
           enable: true,
-          color: "#f5b042",
+          color: "#4f46e5",
           distance: 130,
-          opacity: 0.12,
+          opacity: 0.1,
           width: 1,
         },
         move: {
           enable: true,
-          speed: 0.6,
+          speed: 0.5,
           outModes: { default: "out" },
         },
-        opacity: { value: { min: 0.15, max: 0.6 } },
-        size: { value: { min: 1, max: 2.4 } },
+        opacity: { value: { min: 0.12, max: 0.45 } },
+        size: { value: { min: 1, max: 2.2 } },
       },
       interactivity: {
         events: {
           onHover: { enable: true, mode: "grab" },
         },
         modes: {
-          grab: { distance: 170, links: { opacity: 0.3 } },
+          grab: { distance: 160, links: { opacity: 0.24 } },
         },
       },
     }),

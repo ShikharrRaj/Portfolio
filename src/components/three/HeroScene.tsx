@@ -8,25 +8,33 @@ import * as THREE from "three";
 const COUNT = 2600;
 const RADIUS = 1.7;
 
-// Amber → coral palette for per-point vertex colors.
-const C1 = new THREE.Color("#f5b042");
-const C2 = new THREE.Color("#ff6b4a");
-const C3 = new THREE.Color("#ffd27a");
+// Indigo → sky palette for per-point vertex colors. The highlight tone
+// shifts deeper in light mode so points stay visible on a pale background.
+const C1 = new THREE.Color("#4f46e5"); // indigo
+const C2 = new THREE.Color("#38bdf8"); // sky / cyan
+const HIGHLIGHT = {
+  dark: new THREE.Color("#818cf8"), // soft indigo
+  light: new THREE.Color("#4338ca"), // deep indigo
+};
+
+type Theme = "dark" | "light";
 
 /**
  * A rotating sphere built from thousands of glowing points distributed via a
  * Fibonacci spiral (even coverage). Colors blend across the palette and the
  * whole constellation tilts toward the cursor.
  */
-function ParticleSphere() {
+function ParticleSphere({ theme }: { theme: Theme }) {
   const group = useRef<THREE.Group>(null);
   const { viewport } = useThree();
+  const light = theme === "light";
 
   const { positions, colors } = useMemo(() => {
     const positions = new Float32Array(COUNT * 3);
     const colors = new Float32Array(COUNT * 3);
     const golden = Math.PI * (3 - Math.sqrt(5)); // golden angle
     const tmp = new THREE.Color();
+    const hi = light ? HIGHLIGHT.light : HIGHLIGHT.dark;
     for (let i = 0; i < COUNT; i++) {
       const y = 1 - (i / (COUNT - 1)) * 2; // 1 → -1
       const r = Math.sqrt(1 - y * y);
@@ -37,16 +45,16 @@ function ParticleSphere() {
       positions[i * 3 + 1] = y * rad;
       positions[i * 3 + 2] = Math.sin(theta) * r * rad;
 
-      // blend C1→C2 by latitude, sprinkle C3 highlights
+      // blend C1→C2 by latitude, sprinkle highlight tones
       const t = (y + 1) / 2;
       tmp.copy(C1).lerp(C2, t);
-      if (Math.random() > 0.88) tmp.copy(C3);
+      if (Math.random() > 0.88) tmp.copy(hi);
       colors[i * 3] = tmp.r;
       colors[i * 3 + 1] = tmp.g;
       colors[i * 3 + 2] = tmp.b;
     }
     return { positions, colors };
-  }, []);
+  }, [light]);
 
   useFrame((state) => {
     if (!group.current) return;
@@ -63,8 +71,10 @@ function ParticleSphere() {
   return (
     <Float speed={1.4} rotationIntensity={0.3} floatIntensity={0.9}>
       <group ref={group}>
-        {/* the points */}
-        <points>
+        {/* the points — keyed by theme so blending/opacity rebuild cleanly.
+            Additive blending glows on dark; on light it would wash out to
+            white, so we switch to normal blending with denser, opaque dots. */}
+        <points key={theme}>
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
@@ -78,13 +88,13 @@ function ParticleSphere() {
             />
           </bufferGeometry>
           <pointsMaterial
-            size={0.035}
+            size={light ? 0.04 : 0.032}
             sizeAttenuation
             vertexColors
             transparent
-            opacity={0.95}
+            opacity={light ? 1 : 0.8}
             depthWrite={false}
-            blending={THREE.AdditiveBlending}
+            blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
           />
         </points>
 
@@ -92,10 +102,10 @@ function ParticleSphere() {
         <mesh>
           <icosahedronGeometry args={[RADIUS * 0.55, 1]} />
           <meshBasicMaterial
-            color="#ff6b4a"
+            color={light ? "#4f46e5" : "#38bdf8"}
             wireframe
             transparent
-            opacity={0.08}
+            opacity={light ? 0.12 : 0.07}
           />
         </mesh>
       </group>
@@ -112,7 +122,7 @@ function Rig() {
   return null;
 }
 
-export default function HeroScene() {
+export default function HeroScene({ theme = "dark" }: { theme?: Theme }) {
   return (
     <Canvas
       aria-hidden
@@ -121,7 +131,7 @@ export default function HeroScene() {
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     >
       <Suspense fallback={null}>
-        <ParticleSphere />
+        <ParticleSphere theme={theme} />
         <Rig />
       </Suspense>
     </Canvas>

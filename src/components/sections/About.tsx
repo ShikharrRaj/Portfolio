@@ -21,7 +21,7 @@ export function About() {
     <section id="about" ref={ref} className="relative py-28 md:py-36">
       <div className="container-page">
         <SectionHeading
-          eyebrow="About"
+          eyebrow="Mission Briefing"
           title={about.heading}
           description="A decade of turning hard problems into products people love."
         />

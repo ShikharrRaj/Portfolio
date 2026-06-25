@@ -15,7 +15,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-accent text-black shadow-glow hover:shadow-glow-lg border border-accent/40",
+          "bg-accent text-white shadow-glow hover:shadow-glow-lg border border-accent/40",
         secondary: "glass text-ink hover:bg-line/[0.07] border border-line/10",
         outline: "border border-line/15 text-ink hover:bg-line/[0.05]",
         ghost: "text-muted hover:text-ink hover:bg-line/[0.05]",

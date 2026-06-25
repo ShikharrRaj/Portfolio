@@ -22,6 +22,8 @@ export const profile = {
   phone: "+91 84336 21805",
   availability: "Open to leadership, management & consulting roles",
   resumeUrl: "/resume.pdf",
+  // Replace with a real Cal.com / Calendly link when available.
+  meetingUrl: "mailto:shikhar132020@gmail.com?subject=Let%27s%20schedule%20a%20meeting",
   // Drop a square headshot at /public/avatar.jpg (used in the hero card).
   avatar: "/avatar.jpg",
   // IANA timezone — powers the live "local time" indicator.
@@ -208,7 +210,7 @@ export const projects: Project[] = [
       "A responsive web app with high-performance, pixel-perfect UI built in a tight design-engineering loop, deployed from the frontend.",
     impact: "Faster turnaround and reduced UI rework in a fast-paced agency delivery.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#f5b042", "#ff6b4a"],
+    accent: ["#4f46e5", "#38bdf8"],
     confidential: true,
   },
   {
@@ -223,7 +225,7 @@ export const projects: Project[] = [
       "A web application streamlining insurance tracking workflows for agents and Relationship Managers.",
     impact: "Improved workflow efficiency for distribution teams.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#ff6b4a", "#ffd27a"],
+    accent: ["#3b82f6", "#6366f1"],
     confidential: true,
   },
   {
@@ -237,7 +239,7 @@ export const projects: Project[] = [
       "A clean, customer-facing web app for self-serve insurance tracking.",
     impact: "Reduced support load via self-service visibility.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#ffb347", "#ff5e62"],
+    accent: ["#6366f1", "#38bdf8"],
     confidential: true,
   },
   {
@@ -251,7 +253,7 @@ export const projects: Project[] = [
       "A guided eKYC web experience optimizing the customer onboarding process.",
     impact: "Smoother onboarding with fewer drop-offs.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#f59e42", "#ff6b4a"],
+    accent: ["#4f46e5", "#3b82f6"],
     confidential: true,
   },
   {
@@ -267,7 +269,7 @@ export const projects: Project[] = [
     impact:
       "UI/workflow efficiency up 12–33%, backend performance up to 36%, testing efficiency up 18%.",
     stack: ["React", "NestJS", "TypeScript", "Jenkins"],
-    accent: ["#ff6b4a", "#f5b042"],
+    accent: ["#1e3a8a", "#4f46e5"],
     confidential: true,
   },
   {
@@ -281,7 +283,7 @@ export const projects: Project[] = [
       "Built an AI pipeline integrating Claude with Figma (MCP) to automate design-to-code and accelerate delivery.",
     impact: "Increased development productivity and efficiency by 25–30%.",
     stack: ["Claude", "Figma MCP", "TypeScript", "Automation"],
-    accent: ["#ffd27a", "#ff6b4a"],
+    accent: ["#38bdf8", "#818cf8"],
   },
   {
     title: "Employee Management System",
@@ -294,7 +296,7 @@ export const projects: Project[] = [
       "A full-stack app with user and admin roles: secure registration, full CRUD for admins, a Spring Boot microservices backend and a responsive React frontend.",
     impact: "Clean separation of roles with a scalable microservices backend.",
     stack: ["Java", "Spring Boot", "React", "MySQL"],
-    accent: ["#f5b042", "#e2574a"],
+    accent: ["#4338ca", "#3b82f6"],
     github: "https://github.com/shikhar-rsp",
   },
   {
@@ -308,7 +310,7 @@ export const projects: Project[] = [
       "A system accepting configurable CSV/XLSX inputs with a Template Module to define and manage expected field ordering, backed by Java and a React frontend.",
     impact: "Reliable bulk processing with user-defined templates.",
     stack: ["Java", "React", "JavaScript", "MySQL"],
-    accent: ["#ff6b4a", "#ffb347"],
+    accent: ["#3b82f6", "#38bdf8"],
     github: "https://github.com/shikhar-rsp",
   },
   {
@@ -323,7 +325,7 @@ export const projects: Project[] = [
     impact:
       "Selected by CIIA (Institution's Innovation Council, MHRD, Govt. of India) as an innovation model.",
     stack: ["Python", "YOLOv4", "OpenCV", "scikit-learn", "NumPy"],
-    accent: ["#34d399", "#f5b042"],
+    accent: ["#22d3ee", "#4f46e5"],
     github: "https://github.com/shikhar-rsp",
   },
 ];
@@ -505,10 +507,333 @@ export const achievements: Achievement[] = [
   },
 ];
 
+// Mission-based navigation. `label` is the concise nav chip; `title` is the
+// full "Leadership Journey" name used in section headings + command palette.
 export const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Experience", href: "#experience" },
-  { label: "Work", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "Mission", title: "Mission Briefing", href: "#about" },
+  { label: "Journey", title: "Leadership Journey", href: "#experience" },
+  { label: "Products", title: "Products Built", href: "#projects" },
+  { label: "Expertise", title: "Engineering Expertise", href: "#skills" },
+  { label: "Architecture", title: "Architecture Lab", href: "#architecture" },
+  { label: "Connect", title: "Let's Build Together", href: "#contact" },
 ] as const;
+
+/* ---------------------------------------------------------------------
+ *  Hero impact metrics (leadership framing)
+ * ------------------------------------------------------------------- */
+export const heroMetrics = [
+  { value: "3.6+", label: "Years Experience" },
+  { value: "Tech Lead", label: "Current Role" },
+  { value: "9+", label: "Products Shipped" },
+  { value: "AI", label: "Pipelines Built" },
+] as const;
+
+/* ---------------------------------------------------------------------
+ *  Leadership ladder — career progression (Developer → Future CTO)
+ * ------------------------------------------------------------------- */
+export type LadderStage = {
+  level: string;
+  title: string;
+  period: string;
+  focus: string;
+  responsibilities: string[];
+  impact: string[];
+  lesson: string;
+  current?: boolean;
+  future?: boolean;
+};
+
+export const careerLadder: LadderStage[] = [
+  {
+    level: "01",
+    title: "Developer",
+    period: "2022",
+    focus: "Foundations — shipping real features in production.",
+    responsibilities: [
+      "Built responsive UIs and core CRUD services.",
+      "Learned production discipline: testing, reviews, releases.",
+    ],
+    impact: ["Delivered first full-stack apps end-to-end (Java, React, MySQL)."],
+    lesson: "Quality is a habit, not a phase — it compounds.",
+  },
+  {
+    level: "02",
+    title: "Full-Stack Engineer",
+    period: "2022 — 2025",
+    focus: "Owning high-impact modules on an enterprise banking platform.",
+    responsibilities: [
+      "Led frontend + backend delivery across Payments, Payvantage, GIFT City & NCRP.",
+      "Built scalable NestJS APIs and integrations; drove CI/CD on Jenkins.",
+    ],
+    impact: [
+      "Backend performance up to +36%; UI/workflow efficiency +12–33%.",
+      "Testing efficiency +18% via automation.",
+    ],
+    lesson: "At scale, the architecture is the product. Design for change.",
+  },
+  {
+    level: "03",
+    title: "Tech Lead",
+    period: "2025 — Present",
+    focus: "Leading delivery across multiple enterprise client products.",
+    responsibilities: [
+      "Drive architecture decisions, code reviews and sprint planning.",
+      "Mentor engineers and align stakeholders end-to-end.",
+    ],
+    impact: [
+      "Team delivery consistency +15–20%; production issues −15–20%.",
+      "Turnaround time −20–25% in a fast-paced agency.",
+    ],
+    lesson: "Leverage > output. Multiply the team, don't just ship more.",
+    current: true,
+  },
+  {
+    level: "04",
+    title: "AI Product Engineer",
+    period: "2025 — Present",
+    focus: "Building AI-assisted engineering pipelines as a force multiplier.",
+    responsibilities: [
+      "Designed a Claude × Figma (MCP) design-to-code pipeline.",
+      "Embedded AI workflows into day-to-day delivery.",
+    ],
+    impact: ["Development productivity & efficiency +25–30% across the team."],
+    lesson: "AI shifts the bottleneck from typing to taste and judgment.",
+    current: true,
+  },
+  {
+    level: "05",
+    title: "Future CTO",
+    period: "Next",
+    focus: "Scaling AI-native products and the teams that build them.",
+    responsibilities: [
+      "Set technical vision and engineering culture.",
+      "Build high-performing, product-minded teams.",
+    ],
+    impact: ["Turning engineering excellence into durable business outcomes."],
+    lesson: "Vision without execution is a hallucination — ship the future.",
+    future: true,
+  },
+];
+
+/* ---------------------------------------------------------------------
+ *  Tech clusters — interactive Tech Universe (years / projects / impact)
+ * ------------------------------------------------------------------- */
+export type TechNode = {
+  name: string;
+  years: number;
+  projects: number;
+  impact: string;
+};
+
+export type TechCluster = {
+  name: string;
+  icon: string;
+  nodes: TechNode[];
+};
+
+export const techClusters: TechCluster[] = [
+  {
+    name: "Frontend",
+    icon: "✦",
+    nodes: [
+      { name: "React", years: 3, projects: 12, impact: "Core of most product UIs shipped." },
+      { name: "TypeScript", years: 3, projects: 14, impact: "Type-safe delivery across the stack." },
+      { name: "Angular", years: 1, projects: 4, impact: "Enterprise client apps at RPS." },
+      { name: "Tailwind CSS", years: 3, projects: 12, impact: "Design-system-driven, pixel-perfect UI." },
+    ],
+  },
+  {
+    name: "Backend",
+    icon: "◆",
+    nodes: [
+      { name: "Node.js", years: 3, projects: 10, impact: "APIs and services for web platforms." },
+      { name: "NestJS", years: 2, projects: 5, impact: "Scalable banking APIs (+36% perf)." },
+      { name: "Java / Spring Boot", years: 2, projects: 4, impact: "Microservices for full-stack apps." },
+      { name: "MySQL", years: 3, projects: 9, impact: "Transactional data for fintech systems." },
+    ],
+  },
+  {
+    name: "Cloud",
+    icon: "❖",
+    nodes: [
+      { name: "AWS", years: 2, projects: 5, impact: "Hosting & services for production apps." },
+      { name: "Linux", years: 3, projects: 8, impact: "Runtime + scripting for deployments." },
+    ],
+  },
+  {
+    name: "AI",
+    icon: "✶",
+    nodes: [
+      { name: "Claude", years: 1, projects: 6, impact: "Core of the design-to-code pipeline." },
+      { name: "Figma MCP", years: 1, projects: 4, impact: "Automated design-to-code (+25–30%)." },
+      { name: "Cursor / Copilot", years: 2, projects: 10, impact: "AI-assisted everyday delivery." },
+      { name: "Python (ML/CV)", years: 2, projects: 3, impact: "YOLOv4 traffic ML (CIIA award)." },
+    ],
+  },
+  {
+    name: "DevOps",
+    icon: "▲",
+    nodes: [
+      { name: "Jenkins / CI-CD", years: 2, projects: 6, impact: "Automated pipelines (+18% testing)." },
+      { name: "Kubernetes", years: 1, projects: 2, impact: "Containerized service orchestration." },
+      { name: "Git", years: 3, projects: 14, impact: "Trunk-based, review-driven workflow." },
+    ],
+  },
+  {
+    name: "Leadership",
+    icon: "✷",
+    nodes: [
+      { name: "Tech Leadership", years: 1, projects: 4, impact: "+15–20% team delivery consistency." },
+      { name: "Mentoring", years: 2, projects: 6, impact: "−15–20% production issues." },
+      { name: "Stakeholder Mgmt", years: 2, projects: 8, impact: "Aligned business ↔ engineering." },
+      { name: "Agile / Scrum", years: 3, projects: 12, impact: "Predictable, fast delivery cadence." },
+    ],
+  },
+];
+
+/* ---------------------------------------------------------------------
+ *  Architecture Lab — system designs & technical decisions
+ * ------------------------------------------------------------------- */
+export type ArchNode = { id: string; label: string; detail: string };
+
+export type ArchCase = {
+  id: string;
+  title: string;
+  domain: string;
+  context: string;
+  scale: string;
+  nodes: ArchNode[];
+  decisions: string[];
+  tradeoffs: string[];
+};
+
+export const architecture: ArchCase[] = [
+  {
+    id: "banking",
+    title: "Corporate Banking Payments",
+    domain: "Fintech · Axis Neo",
+    context:
+      "High-stakes corporate payments needing strict controls, auditability and reliability across multiple modules.",
+    scale: "Enterprise · maker/checker controls · up to +36% backend perf",
+    nodes: [
+      { id: "client", label: "Web Client", detail: "React UI for Maker/Checker, Payvantage & GIFT City flows." },
+      { id: "gateway", label: "API Gateway", detail: "Auth, routing and rate control for all module traffic." },
+      { id: "service", label: "NestJS Services", detail: "Modular payment services with validation & idempotency." },
+      { id: "core", label: "Core Banking", detail: "Integrations to downstream banking & settlement systems." },
+      { id: "audit", label: "Audit & Fraud (NCRP)", detail: "Immutable trails + fraud checks for compliance." },
+    ],
+    decisions: [
+      "Maker/Checker as a first-class workflow primitive, not an afterthought.",
+      "Modular NestJS services for independent scaling and ownership.",
+      "Idempotent APIs to make retries safe under network failure.",
+    ],
+    tradeoffs: [
+      "Stronger controls add latency — mitigated with async validation.",
+      "Module isolation increases ops surface but improves blast-radius control.",
+    ],
+  },
+  {
+    id: "wealth",
+    title: "Wealth & Insurance Platforms",
+    domain: "Fintech · Nuvama & Bajaj",
+    context:
+      "Multiple client-facing web apps (HNI tracking, insurance for agents/RMs/customers, eKYC) delivered fast without sacrificing polish.",
+    scale: "Multi-client · shared design system · −20–25% turnaround",
+    nodes: [
+      { id: "ds", label: "Design System", detail: "Shared, type-safe components for pixel-perfect UI." },
+      { id: "apps", label: "Angular Apps", detail: "RTA, BGIL, Insurcraft & EKYC built on one foundation." },
+      { id: "api", label: "Service Layer", detail: "Domain APIs for portfolios, policies and KYC." },
+      { id: "deploy", label: "Frontend Deploy", detail: "Owned release pipeline from the frontend." },
+    ],
+    decisions: [
+      "One design system across apps to cut rework (~15%) and keep consistency.",
+      "Composable feature modules so new client apps spin up fast.",
+    ],
+    tradeoffs: [
+      "Shared system needs governance — worth it for velocity at scale.",
+      "Per-client customization balanced against a common core.",
+    ],
+  },
+  {
+    id: "ai-pipeline",
+    title: "AI Design-to-Code Pipeline",
+    domain: "AI · Claude × Figma MCP",
+    context:
+      "Translating Figma designs into production code was slow and repetitive — so the workflow itself became the product.",
+    scale: "Team-wide · +25–30% productivity",
+    nodes: [
+      { id: "figma", label: "Figma (MCP)", detail: "Designs exposed to tools via the Figma MCP server." },
+      { id: "claude", label: "Claude", detail: "Reasons over design context to generate componentized code." },
+      { id: "gen", label: "Codegen", detail: "Type-safe components matching the design system." },
+      { id: "review", label: "Human Review", detail: "Engineer-in-the-loop for taste, correctness & polish." },
+    ],
+    decisions: [
+      "Keep a human in the loop — AI accelerates, engineers decide.",
+      "Generate against the design system, not freeform markup.",
+    ],
+    tradeoffs: [
+      "Pipeline upkeep vs. raw speed — pays off across many screens.",
+      "Model output needs guardrails; review stage is non-negotiable.",
+    ],
+  },
+];
+
+/* ---------------------------------------------------------------------
+ *  Future Vision
+ * ------------------------------------------------------------------- */
+export const futureVision = {
+  statement:
+    "I'm building toward a CTO seat — where engineering excellence, AI leverage and product taste compound into outcomes that move the business.",
+  pillars: [
+    {
+      title: "AI-Native Products",
+      body: "Ship products with AI at the core, not bolted on — pipelines, copilots and automation that change the economics of building.",
+    },
+    {
+      title: "High-Performing Teams",
+      body: "Grow engineers, set a high bar, and build a culture where great people do their best work.",
+    },
+    {
+      title: "Architecture for Scale",
+      body: "Design systems that stay fast, reliable and simple as they grow by orders of magnitude.",
+    },
+    {
+      title: "Business-Aligned Engineering",
+      body: "Translate vision into roadmaps and roadmaps into measurable, durable impact.",
+    },
+  ],
+} as const;
+
+/* ---------------------------------------------------------------------
+ *  Gamification — sections to track + discovery badges
+ * ------------------------------------------------------------------- */
+// Ordered list of section ids that count toward exploration progress.
+export const journeySections = [
+  { id: "about", title: "Mission Briefing" },
+  { id: "experience", title: "Leadership Journey" },
+  { id: "projects", title: "Products Built" },
+  { id: "skills", title: "Engineering Expertise" },
+  { id: "architecture", title: "Architecture Lab" },
+  { id: "achievements", title: "Achievements" },
+  { id: "future", title: "Future Vision" },
+  { id: "contact", title: "Let's Build Together" },
+] as const;
+
+export type Badge = {
+  id: string;
+  label: string;
+  icon: string; // lucide icon name
+  // section id that unlocks it; "*" means "all sections explored"
+  section: string;
+  hint: string;
+};
+
+export const badges: Badge[] = [
+  { id: "leadership", label: "Leadership Journey", icon: "Compass", section: "experience", hint: "Explore the leadership journey" },
+  { id: "product", label: "Product Explorer", icon: "Boxes", section: "projects", hint: "Review the products built" },
+  { id: "fullstack", label: "Full-Stack Expert", icon: "Layers", section: "skills", hint: "Open engineering expertise" },
+  { id: "architect", label: "Architecture Enthusiast", icon: "Network", section: "architecture", hint: "Step into the architecture lab" },
+  { id: "ai", label: "AI Innovator", icon: "Sparkles", section: "future", hint: "Read the future vision" },
+  { id: "explorer", label: "Portfolio Explorer", icon: "Trophy", section: "*", hint: "Explore the entire journey" },
+];
+

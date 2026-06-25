@@ -7,22 +7,22 @@
 /* ------------------------------------------------------------------ */
 @layer base {
   :root {
-    /* "Ember" — warm ink canvas with a molten amber → coral signature.
-       A deliberate move away from the overused violet/cyan look.
+    /* "Indigo Slate" — cool, executive palette inspired by Linear, Vercel,
+       Apple and Stripe. Indigo primary, sky-blue secondary, on near-black.
        Values are space-separated RGB so they compose with Tailwind's
        <alpha-value> syntax. Dark is the default. */
-    --bg: 13 12 11;
-    --surface: 22 20 18;
-    --elevated: 31 27 23;
-    --line: 255 247 235; /* warm white, used at low alpha for hairlines */
-    --ink: 242 237 229;
-    --muted: 171 162 149;
-    --faint: 122 113 101;
+    --bg: 9 9 11; /* #09090B */
+    --surface: 17 24 39; /* #111827 */
+    --elevated: 26 32 48;
+    --line: 250 250 250; /* cool white, used at low alpha for hairlines */
+    --ink: 250 250 250; /* #FAFAFA */
+    --muted: 161 161 170; /* #A1A1AA */
+    --faint: 113 113 122; /* #71717A */
 
-    --accent: 245 176 66; /* amber / gold */
-    --accent-soft: 252 205 137;
-    --gold: 255 209 122; /* bright highlight */
-    --ember: 255 107 74; /* coral / ember — the spark */
+    --accent: 79 70 229; /* #4F46E5 indigo — primary */
+    --accent-soft: 129 140 248; /* #818CF8 */
+    --gold: 59 130 246; /* #3B82F6 — mid gradient stop (legacy token name) */
+    --ember: 56 189 248; /* #38BDF8 sky — secondary accent (legacy token name) */
 
     --font-sans: "Inter", system-ui, sans-serif;
     --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
@@ -32,18 +32,18 @@
   }
 
   :root.light {
-    --bg: 248 245 239;
+    --bg: 248 250 252;
     --surface: 255 255 255;
     --elevated: 255 255 255;
-    --line: 24 18 10;
-    --ink: 28 22 15;
-    --muted: 96 86 72;
-    --faint: 142 130 114;
+    --line: 15 23 42;
+    --ink: 15 23 42; /* slate-900 */
+    --muted: 71 85 105; /* slate-600 */
+    --faint: 100 116 139; /* slate-500 */
 
-    --accent: 198 120 22; /* deeper amber for contrast on light */
-    --accent-soft: 214 138 40;
-    --gold: 196 138 36;
-    --ember: 226 78 44;
+    --accent: 79 70 229; /* #4F46E5 */
+    --accent-soft: 99 102 241; /* #6366F1 */
+    --gold: 37 99 235; /* #2563EB */
+    --ember: 14 165 233; /* #0EA5E9 */
 
     color-scheme: light;
   }

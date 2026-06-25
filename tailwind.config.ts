@@ -39,8 +39,8 @@ const config: Config = {
         "4xl": "2rem",
       },
       boxShadow: {
-        glow: "0 0 60px -10px rgb(var(--accent) / 0.45)",
-        "glow-lg": "0 0 120px -20px rgb(var(--accent) / 0.55)",
+        glow: "0 0 50px -12px rgb(var(--accent) / 0.32)",
+        "glow-lg": "0 0 100px -24px rgb(var(--accent) / 0.4)",
         neu: "8px 8px 24px rgb(0 0 0 / 0.45), -6px -6px 20px rgb(255 255 255 / 0.03)",
         "inner-line": "inset 0 1px 0 0 rgb(255 255 255 / 0.06)",
       },

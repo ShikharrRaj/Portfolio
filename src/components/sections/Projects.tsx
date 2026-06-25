@@ -17,7 +17,7 @@ export function Projects() {
     <section id="projects" className="relative py-28 md:py-36">
       <div className="container-page">
         <SectionHeading
-          eyebrow="Selected Work"
+          eyebrow="Products Built"
           title="Case studies, not screenshots."
           description="A look at the problems, the solutions, and the measurable impact."
         />

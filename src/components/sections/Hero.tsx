@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { profile } from "@/data/portfolio";
+import { profile, heroMetrics } from "@/data/portfolio";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { GradientBlobs } from "@/components/ui/GradientBlobs";
@@ -10,6 +10,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Spotlight } from "@/components/ui/spotlight";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { scrollToSection } from "@/components/providers/SmoothScrollProvider";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 // Lazy-load the WebGL scene so three.js stays out of the initial bundle.
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
@@ -29,6 +30,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 export function Hero() {
   const typed = useTypewriter(profile.roles);
+  const { theme } = useTheme();
 
   return (
     <section
@@ -41,7 +43,7 @@ export function Hero() {
       {/* subtle grid */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-grid-fade bg-[size:64px_64px] opacity-[0.15] mask-fade-b"
+        className="pointer-events-none absolute inset-0 -z-10 bg-grid-fade bg-[size:72px_72px] opacity-[0.06] mask-fade-b"
       />
 
       <div className="container-page grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
@@ -96,10 +98,27 @@ export function Hero() {
             {profile.tagline}
           </motion.p>
 
+          {/* leadership impact metrics */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease, delay: 1.15 }}
+            transition={{ duration: 0.8, ease, delay: 1.1 }}
+            className="mt-7 flex flex-wrap gap-x-6 gap-y-3"
+          >
+            {heroMetrics.map((m) => (
+              <div key={m.label} className="flex flex-col">
+                <span className="font-display text-lg font-semibold text-gradient">
+                  {m.value}
+                </span>
+                <span className="text-xs text-muted">{m.label}</span>
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease, delay: 1.2 }}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
             <MagneticButton
@@ -136,7 +155,7 @@ export function Hero() {
           className="relative mx-auto aspect-square w-full max-w-md"
         >
           <div className="absolute inset-0">
-            <HeroScene />
+            <HeroScene theme={theme} />
           </div>
 
           {/* floating glass profile card */}

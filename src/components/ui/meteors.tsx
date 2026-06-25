@@ -33,7 +33,7 @@ export function Meteors({ number = 18, className }: { number?: number; className
         <span
           key={i}
           className={cn(
-            "absolute top-0 h-0.5 w-0.5 rotate-[215deg] animate-meteor rounded-full bg-accent shadow-[0_0_0_1px_rgba(245,176,66,0.1)]",
+            "absolute top-0 h-0.5 w-0.5 rotate-[215deg] animate-meteor rounded-full bg-accent shadow-[0_0_0_1px_rgba(79,70,229,0.1)]",
             "before:absolute before:top-1/2 before:h-px before:w-[60px] before:-translate-y-1/2 before:bg-gradient-to-r before:from-accent before:to-transparent before:content-['']",
             className,
           )}

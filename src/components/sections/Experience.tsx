@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import { experiences } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { LeadershipLadder } from "@/components/sections/LeadershipLadder";
 
 export function Experience() {
   const ref = useRef<HTMLDivElement>(null);
@@ -23,7 +24,7 @@ export function Experience() {
     <section id="experience" className="relative py-28 md:py-36">
       <div className="container-page">
         <SectionHeading
-          eyebrow="Experience"
+          eyebrow="Leadership Journey"
           title="A journey of impact, not job titles."
           description="Hover or tap any role to expand the achievements that defined it."
         />
@@ -153,6 +154,9 @@ export function Experience() {
             })}
           </div>
         </div>
+
+        {/* career progression ladder */}
+        <LeadershipLadder />
       </div>
     </section>
   );

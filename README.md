@@ -6,9 +6,9 @@ product — inspired by Apple, Stripe, Vercel, Linear and modern AI startups.
 ## Stack
 
 - **Next.js 14** (App Router) + **TypeScript**
-- **Tailwind CSS** (custom "Ember" design-token system, dark default + light theme)
+- **Tailwind CSS** (custom "Indigo Slate" design-token system, dark default + light theme)
 - **shadcn/ui** patterns — owned base components (`button`, `badge`, `card`,
-  `input`, `textarea`, `dialog`, `command`) themed to the Ember tokens. See
+  `input`, `textarea`, `dialog`, `command`) themed to the Indigo Slate tokens. See
   `components.json`; extend with `npx shadcn@latest add <component>`.
 - **Magic UI + Aceternity UI** effects — `Marquee`, `BorderBeam`,
   `AnimatedGradientText`, `Spotlight`, `Meteors` (in `src/components/ui`).

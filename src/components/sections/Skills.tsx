@@ -14,7 +14,7 @@ export function Skills() {
     <section id="skills" className="relative py-28 md:py-36">
       <div className="container-page">
         <SectionHeading
-          eyebrow="Capabilities"
+          eyebrow="Engineering Expertise"
           title="A full-stack toolkit, deep where it counts."
           description="Select a discipline to explore proficiency across the stack."
         />

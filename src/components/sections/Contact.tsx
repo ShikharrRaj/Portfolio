@@ -36,7 +36,7 @@ export function Contact() {
     <section id="contact" className="relative overflow-hidden py-28 md:py-36">
       {/* interactive map/globe-style backdrop */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-grid-fade bg-[size:40px_40px] opacity-[0.12] [mask-image:radial-gradient(circle,black,transparent_70%)]" />
+        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-grid-fade bg-[size:44px_44px] opacity-[0.06] [mask-image:radial-gradient(circle,black,transparent_70%)]" />
         <motion.div
           className="absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-line/[0.06]"
           animate={{ rotate: 360 }}
@@ -50,7 +50,7 @@ export function Contact() {
           {/* left: invitation */}
           <div>
             <SectionHeading
-              eyebrow="Contact"
+              eyebrow="Let's Build Together"
               title="Let's build something exceptional."
               description="Have a role, a project, or just an idea? My inbox is always open."
             />

@@ -7,15 +7,15 @@ import { Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { Meteors } from "@/components/ui/meteors";
 
 const typeStyles: Record<Achievement["type"], { icon: string; tint: string }> = {
-  Certification: { icon: "❖", tint: "from-ember/20 to-ember/5 text-ember" },
-  Award: { icon: "★", tint: "from-amber-400/20 to-amber-400/5 text-amber-300" },
-  Speaking: { icon: "◎", tint: "from-accent/20 to-accent/5 text-accent-soft" },
-  "Open Source": { icon: "❮❯", tint: "from-emerald-400/20 to-emerald-400/5 text-emerald-300" },
+  Certification: { icon: "❖", tint: "from-sky-400/20 to-sky-400/5 text-sky-300" },
+  Award: { icon: "★", tint: "from-accent/25 to-accent/5 text-accent-soft" },
+  Speaking: { icon: "◎", tint: "from-blue-400/20 to-blue-400/5 text-blue-300" },
+  "Open Source": { icon: "❮❯", tint: "from-cyan-400/20 to-cyan-400/5 text-cyan-300" },
 };
 
 export function Achievements() {
   return (
-    <section className="relative overflow-hidden py-28 md:py-36">
+    <section id="achievements" className="relative overflow-hidden py-28 md:py-36">
       <Meteors number={14} />
       <div className="container-page">
         <SectionHeading
