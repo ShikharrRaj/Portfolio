@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { achievements, type Achievement } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Stagger, StaggerItem } from "@/components/ui/Reveal";
+import { Meteors } from "@/components/ui/meteors";
 
 const typeStyles: Record<Achievement["type"], { icon: string; tint: string }> = {
   Certification: { icon: "❖", tint: "from-ember/20 to-ember/5 text-ember" },
@@ -14,7 +15,8 @@ const typeStyles: Record<Achievement["type"], { icon: string; tint: string }> = 
 
 export function Achievements() {
   return (
-    <section className="relative py-28 md:py-36">
+    <section className="relative overflow-hidden py-28 md:py-36">
+      <Meteors number={14} />
       <div className="container-page">
         <SectionHeading
           eyebrow="Recognition"

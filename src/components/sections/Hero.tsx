@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 import { profile } from "@/data/portfolio";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { Particles } from "@/components/ui/Particles";
 import { GradientBlobs } from "@/components/ui/GradientBlobs";
 import { Avatar } from "@/components/ui/Avatar";
+import { Spotlight } from "@/components/ui/spotlight";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { scrollToSection } from "@/components/providers/SmoothScrollProvider";
 
 // Lazy-load the WebGL scene so three.js stays out of the initial bundle.
@@ -17,6 +18,12 @@ const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
     <div className="h-full w-full animate-pulse rounded-full bg-accent/10 blur-2xl" />
   ),
 });
+
+// Defer the tsParticles engine out of the initial bundle too.
+const TsParticles = dynamic(
+  () => import("@/components/ui/TsParticles").then((m) => m.TsParticles),
+  { ssr: false },
+);
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -29,7 +36,8 @@ export function Hero() {
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-28"
     >
       <GradientBlobs />
-      <Particles className="opacity-70" />
+      <Spotlight className="-top-40 left-0 md:-top-20 md:left-52" />
+      <TsParticles className="absolute inset-0 -z-10 opacity-70" />
       {/* subtle grid */}
       <div
         aria-hidden
@@ -57,12 +65,12 @@ export function Hero() {
             <Line delay={0.4}>Hi, I'm {profile.firstName}.</Line>
             <span className="block overflow-hidden">
               <motion.span
-                className="block text-gradient animate-gradient-pan"
+                className="block"
                 initial={{ y: "110%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 0.9, ease, delay: 0.55 }}
               >
-                I build the future.
+                <AnimatedGradientText>I build the future.</AnimatedGradientText>
               </motion.span>
             </span>
           </h1>

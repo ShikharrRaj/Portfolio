@@ -73,6 +73,30 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
         },
+        // Magic UI / Aceternity effect keyframes
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-vertical": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(calc(-100% - var(--gap)))" },
+        },
+        "border-beam": {
+          "100%": { "offset-distance": "100%" },
+        },
+        meteor: {
+          "0%": { transform: "rotate(var(--angle)) translateX(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform: "rotate(var(--angle)) translateX(-500px)",
+            opacity: "0",
+          },
+        },
+        spotlight: {
+          "0%": { opacity: "0", transform: "translate(-72%, -62%) scale(0.5)" },
+          "100%": { opacity: "1", transform: "translate(-50%,-40%) scale(1)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.8s cubic-bezier(0.16,1,0.3,1) both",
@@ -81,6 +105,11 @@ const config: Config = {
         shimmer: "shimmer 2.4s infinite",
         "gradient-pan": "gradient-pan 8s ease infinite",
         blink: "blink 1s step-end infinite",
+        marquee: "marquee var(--duration, 40s) linear infinite",
+        "marquee-vertical": "marquee-vertical var(--duration, 40s) linear infinite",
+        "border-beam": "border-beam calc(var(--duration, 8) * 1s) infinite linear",
+        meteor: "meteor var(--meteor-duration, 5s) linear infinite",
+        spotlight: "spotlight 2s ease 0.6s 1 forwards",
       },
       transitionTimingFunction: {
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",

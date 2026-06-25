@@ -1,0 +1,55 @@
+"use client";
+
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+
+/**
+ * shadcn-pattern Button, themed to the project's Ember design tokens.
+ * You own this file — extend variants freely.
+ */
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default:
+          "bg-accent text-black shadow-glow hover:shadow-glow-lg border border-accent/40",
+        secondary: "glass text-ink hover:bg-line/[0.07] border border-line/10",
+        outline: "border border-line/15 text-ink hover:bg-line/[0.05]",
+        ghost: "text-muted hover:text-ink hover:bg-line/[0.05]",
+        link: "text-accent-soft underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-11 px-7 text-sm rounded-full",
+        sm: "h-9 px-4 text-sm rounded-full",
+        lg: "h-12 px-8 text-base rounded-full",
+        icon: "h-10 w-10 rounded-full",
+      },
+    },
+    defaultVariants: { variant: "default", size: "default" },
+  },
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return (
+      <Comp
+        ref={ref}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+    );
+  },
+);
+Button.displayName = "Button";
+
+export { Button, buttonVariants };

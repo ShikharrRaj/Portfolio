@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { projects, projectCategories, type Project } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { Badge } from "@/components/ui/badge";
 
 export function Projects() {
   const [filter, setFilter] = useState<(typeof projectCategories)[number]>("All");
@@ -92,6 +94,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         transition={{ type: "spring", stiffness: 200, damping: 18 }}
         className="preserve-3d relative h-full overflow-hidden rounded-4xl glass p-6 transition-shadow duration-500 group-hover:shadow-glow-lg"
       >
+        {hover && <BorderBeam duration={6} size={160} />}
         {/* animated mockup header */}
         <div
           className="relative mb-6 aspect-[16/10] overflow-hidden rounded-2xl"
@@ -148,12 +151,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
           <div className="mt-4 flex flex-wrap gap-2">
             {project.stack.map((tech) => (
-              <span
-                key={tech}
-                className="rounded-full border border-line/10 bg-line/[0.04] px-2.5 py-1 text-xs text-muted"
-              >
-                {tech}
-              </span>
+              <Badge key={tech}>{tech}</Badge>
             ))}
           </div>
 

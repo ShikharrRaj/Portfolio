@@ -36,7 +36,7 @@ export function About() {
             ))}
 
             {/* principle cards */}
-            <Stagger className="mt-10 grid grid-cols-2 gap-4">
+            <Stagger className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {about.principles.map((pr) => (
                 <StaggerItem key={pr.title}>
                   <motion.div

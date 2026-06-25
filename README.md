@@ -6,12 +6,33 @@ product — inspired by Apple, Stripe, Vercel, Linear and modern AI startups.
 ## Stack
 
 - **Next.js 14** (App Router) + **TypeScript**
-- **Tailwind CSS** (custom design-token system, dark default + light theme)
+- **Tailwind CSS** (custom "Ember" design-token system, dark default + light theme)
+- **shadcn/ui** patterns — owned base components (`button`, `badge`, `card`,
+  `input`, `textarea`, `dialog`, `command`) themed to the Ember tokens. See
+  `components.json`; extend with `npx shadcn@latest add <component>`.
+- **Magic UI + Aceternity UI** effects — `Marquee`, `BorderBeam`,
+  `AnimatedGradientText`, `Spotlight`, `Meteors` (in `src/components/ui`).
 - **Framer Motion** — micro-interactions, reveals, stagger, carousels
 - **GSAP + ScrollTrigger** — synchronized with **Lenis** smooth scrolling
-- **React Three Fiber / Three.js** — interactive 3D hero crystal
-- Custom cursor, magnetic buttons, animated particle field, gradient blobs
+- **React Three Fiber / Three.js** — interactive 3D hero **particle sphere**
+- **tsParticles** — ambient interactive background (lazy-loaded)
+- **@splinetool/react-spline** — optional Spline 3D embed (see below)
+- **lucide-react** — icons
+- Custom cursor, magnetic buttons, **⌘K command palette**, live clock
 - Fully responsive, SEO-optimized, accessible, reduced-motion aware
+
+### Using a Spline scene
+
+The hero ships with an in-house R3F particle sphere. To use a Spline scene
+instead, export one at [spline.design](https://spline.design), then in
+`src/components/sections/Hero.tsx` swap the dynamic `HeroScene` import for
+`SplineEmbed` and pass your `.splinecode` URL:
+
+```tsx
+import { SplineEmbed } from "@/components/three/SplineEmbed";
+// ...
+<SplineEmbed scene="https://prod.spline.design/XXXX/scene.splinecode" />
+```
 
 ## Getting started
 

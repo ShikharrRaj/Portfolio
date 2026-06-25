@@ -7,6 +7,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Reveal } from "@/components/ui/Reveal";
 import { LiveClock } from "@/components/ui/LiveClock";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 type Status = "idle" | "sending" | "sent";
 
@@ -95,32 +97,29 @@ export function Contact() {
             >
               <div className="space-y-5">
                 <Field label="Name">
-                  <input
+                  <Input
                     required
                     value={form.name}
                     onChange={set("name")}
                     placeholder="Ada Lovelace"
-                    className="peer w-full bg-transparent text-ink outline-none placeholder:text-faint"
                   />
                 </Field>
                 <Field label="Email">
-                  <input
+                  <Input
                     required
                     type="email"
                     value={form.email}
                     onChange={set("email")}
                     placeholder="ada@example.com"
-                    className="w-full bg-transparent text-ink outline-none placeholder:text-faint"
                   />
                 </Field>
                 <Field label="Message">
-                  <textarea
+                  <Textarea
                     required
                     rows={4}
                     value={form.message}
                     onChange={set("message")}
                     placeholder="Tell me about the opportunity…"
-                    className="w-full resize-none bg-transparent text-ink outline-none placeholder:text-faint"
                   />
                 </Field>
               </div>
