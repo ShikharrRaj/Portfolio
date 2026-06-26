@@ -2,12 +2,31 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import * as Icons from "lucide-react";
-import { Check, Lock } from "lucide-react";
+import {
+  Check,
+  Lock,
+  Compass,
+  Boxes,
+  Layers,
+  Network,
+  Sparkles,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
 import { useExploration } from "@/components/providers/ExplorationProvider";
 import { journeySections } from "@/data/portfolio";
 import { scrollToSection } from "@/components/providers/SmoothScrollProvider";
 import { cn } from "@/lib/utils";
+
+// Explicit map so we only bundle the icons we actually use.
+const BADGE_ICONS: Record<string, LucideIcon> = {
+  Compass,
+  Boxes,
+  Layers,
+  Network,
+  Sparkles,
+  Trophy,
+};
 
 /**
  * A subtle, executive progress indicator pinned bottom-left. Shows journey
@@ -71,10 +90,7 @@ export function ProgressTracker() {
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {badges.map((b) => {
-                  const Icon =
-                    (Icons[b.icon as keyof typeof Icons] as React.ComponentType<{
-                      className?: string;
-                    }>) ?? Lock;
+                  const Icon = BADGE_ICONS[b.icon] ?? Lock;
                   return (
                     <div
                       key={b.id}

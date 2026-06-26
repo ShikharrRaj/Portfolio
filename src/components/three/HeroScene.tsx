@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
 import * as THREE from "three";
 
-const COUNT = 2600;
+const COUNT = 1900;
 const RADIUS = 1.7;
 
 // Indigo → sky palette for per-point vertex colors. The highlight tone
@@ -88,24 +88,24 @@ function ParticleSphere({ theme }: { theme: Theme }) {
             />
           </bufferGeometry>
           <pointsMaterial
-            size={light ? 0.04 : 0.032}
+            size={light ? 0.034 : 0.032}
             sizeAttenuation
             vertexColors
             transparent
-            opacity={light ? 1 : 0.8}
+            opacity={light ? 0.7 : 0.8}
             depthWrite={false}
             blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
           />
         </points>
 
-        {/* faint inner wireframe core for depth */}
+        {/* inner wireframe model — clearly readable in both themes */}
         <mesh>
-          <icosahedronGeometry args={[RADIUS * 0.55, 1]} />
+          <icosahedronGeometry args={[RADIUS * 0.62, 1]} />
           <meshBasicMaterial
-            color={light ? "#4f46e5" : "#38bdf8"}
+            color={light ? "#4f46e5" : "#818cf8"}
             wireframe
             transparent
-            opacity={light ? 0.12 : 0.07}
+            opacity={light ? 0.35 : 0.32}
           />
         </mesh>
       </group>
@@ -122,11 +122,19 @@ function Rig() {
   return null;
 }
 
-export default function HeroScene({ theme = "dark" }: { theme?: Theme }) {
+export default function HeroScene({
+  theme = "dark",
+  active = true,
+}: {
+  theme?: Theme;
+  active?: boolean;
+}) {
   return (
     <Canvas
       aria-hidden
-      dpr={[1, 1.8]}
+      // Stop rendering entirely when the hero is scrolled out of view.
+      frameloop={active ? "always" : "never"}
+      dpr={[1, 1.75]}
       camera={{ position: [0, 0, 5], fov: 45 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     >

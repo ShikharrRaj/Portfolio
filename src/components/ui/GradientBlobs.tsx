@@ -17,19 +17,14 @@ export function GradientBlobs({ className }: { className?: string }) {
       )}
     >
       <motion.div
-        className="absolute -left-32 top-0 h-[34rem] w-[34rem] rounded-full bg-accent/[0.18] blur-[140px]"
-        animate={{ x: [0, 60, -20, 0], y: [0, 40, 80, 0], scale: [1, 1.08, 0.96, 1] }}
-        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute right-[-10rem] top-1/3 h-[30rem] w-[30rem] rounded-full bg-ember/[0.14] blur-[150px]"
-        animate={{ x: [0, -50, 30, 0], y: [0, 60, -30, 0], scale: [1, 0.92, 1.1, 1] }}
-        transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-[-12rem] left-1/3 h-[28rem] w-[28rem] rounded-full bg-gold/[0.12] blur-[140px]"
-        animate={{ x: [0, 40, -40, 0], y: [0, -40, 20, 0], scale: [1, 1.08, 1, 1] }}
+        className="absolute -left-32 top-0 h-[34rem] w-[34rem] rounded-full bg-accent/[0.1] blur-[160px]"
+        animate={{ x: [0, 40, -10, 0], y: [0, 30, 60, 0] }}
         transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute right-[-10rem] top-1/3 h-[30rem] w-[30rem] rounded-full bg-ember/[0.08] blur-[170px]"
+        animate={{ x: [0, -36, 20, 0], y: [0, 44, -20, 0] }}
+        transition={{ duration: 40, repeat: Infinity, ease: "easeInOut" }}
       />
     </div>
   );

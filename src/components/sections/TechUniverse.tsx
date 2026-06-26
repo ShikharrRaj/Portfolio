@@ -85,14 +85,18 @@ export function TechUniverse() {
                   className="absolute rounded-full border border-line/[0.08]"
                   style={{ width: orbit.radius * 2, height: orbit.radius * 2 }}
                 >
-                  <motion.div
-                    className="relative h-full w-full"
-                    animate={reduced ? {} : { rotate: orbit.reverse ? -360 : 360 }}
-                    transition={{
-                      duration: orbit.duration,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
+                  {/* GPU-composited CSS rotation (no per-frame JS) */}
+                  <div
+                    className="relative h-full w-full [will-change:transform]"
+                    style={
+                      reduced
+                        ? undefined
+                        : {
+                            animation: `orbit-spin ${orbit.duration}s linear infinite${
+                              orbit.reverse ? " reverse" : ""
+                            }`,
+                          }
+                    }
                   >
                     {items.map((tech, i) => {
                       const angle = (i / orbit.count) * Math.PI * 2;
@@ -104,24 +108,32 @@ export function TechUniverse() {
                           className="absolute left-1/2 top-1/2"
                           style={{ transform: `translate(${x}px, ${y}px)` }}
                         >
-                          {/* counter-rotate so labels stay upright */}
-                          <motion.span
-                            className="flex -translate-x-1/2 -translate-y-1/2 cursor-default items-center whitespace-nowrap rounded-full glass px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-accent/20 hover:text-accent-soft"
-                            data-cursor=""
-                            animate={reduced ? {} : { rotate: orbit.reverse ? 360 : -360 }}
-                            transition={{
-                              duration: orbit.duration,
-                              repeat: Infinity,
-                              ease: "linear",
-                            }}
-                            whileHover={{ scale: 1.15 }}
+                          {/* counter-rotation wrapper keeps labels upright.
+                              origin-top-left pivots at the orbit point so the
+                              badge rides exactly on the ring (no wobble). */}
+                          <div
+                            className="origin-top-left [will-change:transform]"
+                            style={
+                              reduced
+                                ? undefined
+                                : {
+                                    animation: `orbit-spin ${orbit.duration}s linear infinite${
+                                      orbit.reverse ? "" : " reverse"
+                                    }`,
+                                  }
+                            }
                           >
-                            {tech}
-                          </motion.span>
+                            <span
+                              className="flex -translate-x-1/2 -translate-y-1/2 cursor-default items-center whitespace-nowrap rounded-full glass px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-accent/20 hover:text-accent-soft"
+                              data-cursor=""
+                            >
+                              {tech}
+                            </span>
+                          </div>
                         </div>
                       );
                     })}
-                  </motion.div>
+                  </div>
                 </div>
               );
             })}

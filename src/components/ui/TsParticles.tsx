@@ -29,29 +29,24 @@ export function TsParticles({ id = "tsparticles", className }: TsParticlesProps)
       fpsLimit: 60,
       detectRetina: true,
       particles: {
-        number: { value: 64, density: { enable: true } },
+        number: { value: 36, density: { enable: true } },
         color: { value: ["#4f46e5", "#38bdf8", "#818cf8"] },
-        links: {
-          enable: true,
-          color: "#4f46e5",
-          distance: 130,
-          opacity: 0.1,
-          width: 1,
-        },
+        // No connecting lines — quieter, more minimal field of drifting dots.
+        links: { enable: false },
         move: {
           enable: true,
-          speed: 0.5,
+          speed: 0.35,
           outModes: { default: "out" },
         },
-        opacity: { value: { min: 0.12, max: 0.45 } },
-        size: { value: { min: 1, max: 2.2 } },
+        opacity: { value: { min: 0.08, max: 0.32 } },
+        size: { value: { min: 1, max: 2 } },
       },
       interactivity: {
         events: {
-          onHover: { enable: true, mode: "grab" },
+          onHover: { enable: true, mode: "bubble" },
         },
         modes: {
-          grab: { distance: 160, links: { opacity: 0.24 } },
+          bubble: { distance: 140, size: 3, opacity: 0.5, duration: 1 },
         },
       },
     }),

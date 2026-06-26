@@ -77,7 +77,7 @@ export function Footer() {
       {/* oversized watermark name */}
       <div
         aria-hidden
-        className="pointer-events-none mt-10 select-none text-center font-display text-[18vw] font-bold leading-none text-line/[0.03]"
+        className="pointer-events-none mt-10 select-none text-center font-display text-[14vw] font-bold leading-none text-ink/[0.05]"
       >
         {profile.firstName}
       </div>

@@ -70,7 +70,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setRotate({ x: -py * 8, y: px * 8 });
+    setRotate({ x: -py * 4, y: px * 4 });
   };
 
   return (
@@ -108,10 +108,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             <span className="h-2.5 w-2.5 rounded-full bg-white/40" />
             <span className="h-2.5 w-2.5 rounded-full bg-white/40" />
           </div>
-          {/* drifting glints */}
+          {/* soft sheen */}
           <motion.div
-            className="absolute -inset-1 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.35),transparent_45%)]"
-            animate={hover ? { opacity: 0.9, scale: 1.1 } : { opacity: 0.5, scale: 1 }}
+            className="absolute -inset-1 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_50%)]"
+            animate={hover ? { opacity: 0.5 } : { opacity: 0.3 }}
             transition={{ duration: 0.6 }}
           />
           <div

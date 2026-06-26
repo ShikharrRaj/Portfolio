@@ -30,7 +30,7 @@ export function SectionHeading({
     >
       <Reveal>
         <span className="eyebrow">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+          <span aria-hidden className="font-mono font-semibold text-accent">&gt;</span>
           {eyebrow}
         </span>
       </Reveal>

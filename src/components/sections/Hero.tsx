@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { profile, heroMetrics } from "@/data/portfolio";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { MagneticButton } from "@/components/ui/MagneticButton";
@@ -31,6 +32,8 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export function Hero() {
   const typed = useTypewriter(profile.roles);
   const { theme } = useTheme();
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const sceneInView = useInView(sceneRef, { margin: "120px" });
 
   return (
     <section
@@ -154,8 +157,8 @@ export function Hero() {
           transition={{ duration: 1, ease, delay: 0.5 }}
           className="relative mx-auto aspect-square w-full max-w-md"
         >
-          <div className="absolute inset-0">
-            <HeroScene theme={theme} />
+          <div ref={sceneRef} className="absolute inset-0">
+            <HeroScene theme={theme} active={sceneInView} />
           </div>
 
           {/* floating glass profile card */}
