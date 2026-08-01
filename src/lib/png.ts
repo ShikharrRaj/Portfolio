@@ -1,16 +1,16 @@
 /* Minimal PNG encoder (server-side only).
  *
- * The scene is deterministic, so it is painted and encoded once at build
- * time and inlined as a data URI. That makes the art a real <img> in the
- * server HTML — it cannot fail to appear because a client effect did not
- * run, and it renders with JavaScript disabled.
+ * The scene is deterministic, so each layer is painted and encoded once at
+ * build time and served as a static PNG from app/scene/[layer]. The art is
+ * a plain <img> in the server HTML — it cannot fail to appear because a
+ * client effect did not run, and it renders with JavaScript disabled.
  *
  * Node's zlib is the only dependency; no image library needed for a
  * truecolour non-interlaced PNG.
  */
 
 import { deflateSync } from "node:zlib";
-import { paintScene, type Buf } from "./pixelScene";
+import { GRASS_FRAMES, type Buf } from "./pixelScene";
 
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
@@ -63,10 +63,23 @@ export function encodePng(b: Buf): Buffer {
   ]);
 }
 
-let cached: string | null = null;
+export type SceneLayers = {
+  sky: string;
+  clouds: string;
+  land: string;
+  grass: string[];
+  props: string;
+  canopyL: string;
+  canopyR: string;
+};
 
-/** The scene as a `data:` URI. Painted and encoded once. */
-export function sceneDataUri(): string {
-  if (!cached) cached = `data:image/png;base64,${encodePng(paintScene()).toString("base64")}`;
-  return cached;
-}
+/** URLs of the prerendered layers. Served by app/scene/[layer]/route.ts. */
+export const SCENE_LAYERS: SceneLayers = {
+  sky: "/scene/sky.png",
+  clouds: "/scene/clouds.png",
+  land: "/scene/land.png",
+  grass: Array.from({ length: GRASS_FRAMES }, (_, f) => `/scene/grass-${f}.png`),
+  props: "/scene/props.png",
+  canopyL: "/scene/canopy-l.png",
+  canopyR: "/scene/canopy-r.png",
+};

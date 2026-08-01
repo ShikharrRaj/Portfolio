@@ -1,8 +1,8 @@
 import { Site } from "@/components/site/Site";
-import { sceneDataUri } from "@/lib/png";
+import { SCENE_LAYERS } from "@/lib/png";
 
-/* The landscape is painted and encoded on the server, so it ships inside
- * the HTML as an <img>. Pixel wallpaper, modern UI, portfolio below. */
+/* Pixel landscape as the hero wallpaper, modern UI over it, portfolio
+ * below. The art is prerendered PNG layers; the wind is pure CSS. */
 export default function Home() {
-  return <Site sceneSrc={sceneDataUri()} />;
+  return <Site layers={SCENE_LAYERS} />;
 }

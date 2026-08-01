@@ -13,8 +13,10 @@
  * client effect having run.
  */
 
+import type { SceneLayers } from "@/lib/png";
 import { caseFiles, corrections, timeline } from "@/data/os";
 import { experiences, profile } from "@/data/portfolio";
+import { Landscape } from "./Landscape";
 
 const NAV = [
   { label: "Work", href: "#work" },
@@ -31,16 +33,10 @@ const CARDS = [
   { tone: "done", label: "Built", value: "Claude × Figma pipeline · +25–30% velocity" },
 ];
 
-function Hero({ sceneSrc }: { sceneSrc: string }) {
+function Hero({ layers }: { layers: SceneLayers }) {
   return (
     <header className="relative isolate min-h-[100svh] overflow-hidden bg-[#66B8EE]">
-      <img
-        src={sceneSrc}
-        alt=""
-        aria-hidden
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-        style={{ imageRendering: "pixelated" }}
-      />
+      <Landscape layers={layers} />
 
       {/* Nav — frosted pill, floating over the art */}
       <nav className="relative z-20 mx-auto flex max-w-6xl items-center gap-3 px-5 pt-5 sm:px-8 sm:pt-7">
@@ -148,10 +144,10 @@ function Section({
   );
 }
 
-export function Site({ sceneSrc }: { sceneSrc: string }) {
+export function Site({ layers }: { layers: SceneLayers }) {
   return (
     <div id="top" className="bg-[#F7FAF7] text-slate-800">
-      <Hero sceneSrc={sceneSrc} />
+      <Hero layers={layers} />
 
       <main className="mx-auto max-w-6xl px-5 sm:px-8">
         <Section id="work" eyebrow="Case files" title="Things he built, opened up.">

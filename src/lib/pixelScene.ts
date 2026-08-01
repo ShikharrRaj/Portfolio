@@ -293,8 +293,7 @@ function hills(b: Buf) {
   }
 }
 
-function meadow(b: Buf) {
-  const rnd = mulberry32(90210);
+function meadowBase(b: Buf) {
   const base = HORIZON + 34;
   for (let x = 0; x < b.w; x++) {
     // The meadow's top edge follows its own gentle curve rather than a
@@ -313,7 +312,18 @@ function meadow(b: Buf) {
       set(b, x, y, c);
     }
   }
-  // Tufts — short vertical strokes, denser and darker toward the foreground.
+}
+
+/**
+ * Grass tufts, painted as their own layer so they can be swapped frame by
+ * frame. Each stalk bends by an amount that depends on both the frame and
+ * its x position, so the lean travels across the field as a wave rather
+ * than every blade twitching in unison.
+ */
+export function grassTufts(b: Buf, frame: number) {
+  const rnd = mulberry32(90210);
+  const base = HORIZON + 34;
+  const LEAN = [0, 1, 0, -1];
   for (let i = 0; i < 3400; i++) {
     const x = Math.floor(rnd() * b.w);
     const depth = Math.pow(rnd(), 0.55);
@@ -327,12 +337,28 @@ function meadow(b: Buf) {
         : rnd() > 0.55
           ? P.grassLit
           : P.grassDeep;
-    for (let k = 0; k < len; k++) set(b, x, y - k, c);
+    // Wave travels left-to-right; nearer grass leans further.
+    const lean = LEAN[(frame + Math.floor(x / 26)) & 3] * (depth > 0.5 ? 1 : 0);
+    for (let k = 0; k < len; k++) {
+      const dx = len > 1 ? Math.round((lean * k) / len) : 0;
+      set(b, x + dx, y - k, c);
+    }
   }
 }
 
-/** Big canopy tree, lit from the upper right. */
-function tree(b: Buf, cx: number, cy: number, scale: number, seed: number) {
+/**
+ * Big canopy tree, lit from the upper right. `part` splits the trunk from
+ * the foliage so the canopy can sway on its own layer while the trunk
+ * stays planted.
+ */
+function tree(
+  b: Buf,
+  cx: number,
+  cy: number,
+  scale: number,
+  seed: number,
+  part: "trunk" | "canopy" | "both" = "both",
+) {
   const rnd = mulberry32(seed);
   const clumps: { x: number; y: number; r: number }[] = [];
   const n = 14;
@@ -347,28 +373,33 @@ function tree(b: Buf, cx: number, cy: number, scale: number, seed: number) {
   }
   clumps.push({ x: cx, y: cy, r: scale * 0.95 });
 
-  // trunk first, so foliage overlaps it
+  // Trunk first, so foliage overlaps it.
+  const drawTrunk = part !== "canopy";
+  const drawCanopy = part !== "trunk";
   const trunkTop = cy + scale * 0.5;
   const trunkBottom = cy + scale * 2.05;
-  for (let y = trunkTop; y < trunkBottom; y++) {
-    const t = (y - trunkTop) / (trunkBottom - trunkTop);
-    const halfW = scale * (0.07 + t * 0.1);
-    for (let x = cx - halfW; x <= cx + halfW; x++) {
-      const rel = (x - (cx - halfW)) / (halfW * 2);
-      set(b, Math.round(x), Math.round(y), rel > 0.55 ? P.bark : P.barkShade);
+  if (drawTrunk)
+    for (let y = trunkTop; y < trunkBottom; y++) {
+      const t = (y - trunkTop) / (trunkBottom - trunkTop);
+      const halfW = scale * (0.07 + t * 0.1);
+      for (let x = cx - halfW; x <= cx + halfW; x++) {
+        const rel = (x - (cx - halfW)) / (halfW * 2);
+        set(b, Math.round(x), Math.round(y), rel > 0.55 ? P.bark : P.barkShade);
+      }
     }
-  }
-  // roots flaring into the grass
-  for (let k = 0; k < 5; k++) {
-    const dir = k % 2 ? 1 : -1;
-    const len = scale * (0.2 + rnd() * 0.25);
-    for (let s = 0; s < len; s++) {
-      const x = cx + dir * s;
-      const y = trunkBottom - 1 + Math.floor(s * 0.25);
-      set(b, Math.round(x), Math.round(y), P.barkShade);
+  // Roots flaring into the grass.
+  if (drawTrunk)
+    for (let k = 0; k < 5; k++) {
+      const dir = k % 2 ? 1 : -1;
+      const len = scale * (0.2 + rnd() * 0.25);
+      for (let s = 0; s < len; s++) {
+        const x = cx + dir * s;
+        const y = trunkBottom - 1 + Math.floor(s * 0.25);
+        set(b, Math.round(x), Math.round(y), P.barkShade);
+      }
     }
-  }
 
+  if (!drawCanopy) return;
   for (let y = cy - scale * 1.6; y <= cy + scale * 1.3; y++) {
     for (let x = cx - scale * 1.7; x <= cx + scale * 1.7; x++) {
       let best = -1;
@@ -494,31 +525,73 @@ function flower(b: Buf, ox: number, oy: number) {
 }
 
 /* ---- compose ------------------------------------------------------- */
+/*
+ *  Emitted as separate transparent layers so the animated parts move
+ *  independently in CSS. Every layer shares one coordinate space, so they
+ *  line up exactly when stacked.
+ *
+ *  Order matters and mirrors the original single-pass paint order —
+ *  back to front:
+ *
+ *    1. sky      static   sky ramp + sun
+ *    2. clouds   DRIFTS   below the skyline, so buildings occlude them
+ *    3. land     static   skyline, ridges, turf
+ *    4. grass    CYCLES   four frames of wind
+ *    5. props    static   trunks, blanket, laptop, flowers — ABOVE the
+ *                         grass, or tufts speckle across the laptop
+ *    6. canopy   SWAYS    one layer per tree, above its trunk
+ */
 
-export function paintScene(): Buf {
+const TREE_L = { x: 46, y: 92, s: 20, seed: 4242 };
+const TREE_R = { x: 336, y: 74, s: 46, seed: 1337 };
+
+export function paintSky(): Buf {
   const b = makeBuf();
-
   sky(b);
   sun(b);
+  return b;
+}
 
+export function paintClouds(): Buf {
+  const b = makeBuf();
   cloud(b, 62, 40, 1.5, 21);
   cloud(b, 168, 26, 1.9, 84);
   cloud(b, 268, 52, 1.2, 133);
   cloud(b, 348, 20, 1.0, 512);
   cloud(b, 12, 74, 0.9, 640);
+  return b;
+}
 
+export function paintLand(): Buf {
+  const b = makeBuf();
   skyline(b);
   hills(b);
-  meadow(b);
+  meadowBase(b);
+  return b;
+}
 
-  // A small tree on the left for depth, the hero tree on the right.
-  tree(b, 46, 92, 20, 4242);
-  tree(b, 336, 74, 46, 1337);
+export const GRASS_FRAMES = 4;
 
+export function paintGrass(frame: number): Buf {
+  const b = makeBuf();
+  grassTufts(b, frame);
+  return b;
+}
+
+export function paintProps(): Buf {
+  const b = makeBuf();
+  tree(b, TREE_L.x, TREE_L.y, TREE_L.s, TREE_L.seed, "trunk");
+  tree(b, TREE_R.x, TREE_R.y, TREE_R.s, TREE_R.seed, "trunk");
   blanket(b, 286, 168);
   laptop(b, 196, 140);
   flower(b, 96, 176);
   flower(b, 118, 190);
+  return b;
+}
 
+export function paintCanopy(side: "left" | "right"): Buf {
+  const b = makeBuf();
+  const t = side === "left" ? TREE_L : TREE_R;
+  tree(b, t.x, t.y, t.s, t.seed, "canopy");
   return b;
 }
