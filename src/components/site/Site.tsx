@@ -1,5 +1,3 @@
-"use client";
-
 /* The site.
  *
  * Structure follows the reference: a full-bleed pixel landscape as the hero
@@ -9,12 +7,14 @@
  * made the previous attempt read as a retro game instead of a product.
  *
  * Below the fold it becomes a portfolio: real work, real decisions.
+ *
+ * Fully server-rendered. The landscape arrives as an <img> already in the
+ * HTML and the entrance animation is CSS, so nothing here depends on a
+ * client effect having run.
  */
 
-import { useEffect, useState } from "react";
 import { caseFiles, corrections, timeline } from "@/data/os";
 import { experiences, profile } from "@/data/portfolio";
-import { SceneCanvas } from "./SceneCanvas";
 
 const NAV = [
   { label: "Work", href: "#work" },
@@ -31,18 +31,16 @@ const CARDS = [
   { tone: "done", label: "Built", value: "Claude × Figma pipeline · +25–30% velocity" },
 ];
 
-function Hero() {
-  const [lift, setLift] = useState(false);
-  useEffect(() => {
-    const t = window.setTimeout(() => setLift(true), 80);
-    return () => window.clearTimeout(t);
-  }, []);
-
+function Hero({ sceneSrc }: { sceneSrc: string }) {
   return (
     <header className="relative isolate min-h-[100svh] overflow-hidden bg-[#66B8EE]">
-      <div className="absolute inset-0 -z-10">
-        <SceneCanvas />
-      </div>
+      <img
+        src={sceneSrc}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
+        style={{ imageRendering: "pixelated" }}
+      />
 
       {/* Nav — frosted pill, floating over the art */}
       <nav className="relative z-20 mx-auto flex max-w-6xl items-center gap-3 px-5 pt-5 sm:px-8 sm:pt-7">
@@ -73,11 +71,7 @@ function Hero() {
 
       {/* Headline block */}
       <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-5 pb-24 pt-16 sm:px-8 sm:pt-24 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-        <div
-          className={`max-w-2xl transition-all duration-700 ${
-            lift ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-          }`}
-        >
+        <div className="site-rise max-w-2xl">
           <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(15,40,70,0.45)] sm:text-5xl lg:text-6xl">
             I build systems banks trust
             <br className="hidden sm:block" /> and teams can maintain.
@@ -108,10 +102,8 @@ function Hero() {
           {CARDS.map((c, i) => (
             <li
               key={c.label + c.value}
-              className={`rounded-xl bg-slate-900/45 px-4 py-3 shadow-lg backdrop-blur-md transition-all duration-700 ${
-                lift ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"
-              }`}
-              style={{ transitionDelay: `${160 + i * 120}ms` }}
+              className="site-slide rounded-xl bg-slate-900/45 px-4 py-3 shadow-lg backdrop-blur-md"
+              style={{ animationDelay: `${160 + i * 120}ms` }}
             >
               <span className="flex items-center gap-2">
                 <span
@@ -156,10 +148,10 @@ function Section({
   );
 }
 
-export function Site() {
+export function Site({ sceneSrc }: { sceneSrc: string }) {
   return (
     <div id="top" className="bg-[#F7FAF7] text-slate-800">
-      <Hero />
+      <Hero sceneSrc={sceneSrc} />
 
       <main className="mx-auto max-w-6xl px-5 sm:px-8">
         <Section id="work" eyebrow="Case files" title="Things he built, opened up.">

@@ -1,6 +1,8 @@
 import { Site } from "@/components/site/Site";
+import { sceneDataUri } from "@/lib/png";
 
-/* Pixel landscape as the hero wallpaper, modern UI over it, portfolio below. */
+/* The landscape is painted and encoded on the server, so it ships inside
+ * the HTML as an <img>. Pixel wallpaper, modern UI, portfolio below. */
 export default function Home() {
-  return <Site />;
+  return <Site sceneSrc={sceneDataUri()} />;
 }

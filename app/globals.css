@@ -313,3 +313,41 @@
     }
   }
 }
+
+/* Hero entrance — CSS so it never depends on a client effect. */
+@layer utilities {
+  @keyframes site-rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes site-slide {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .site-rise {
+    animation: site-rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .site-slide {
+    animation: site-slide 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-rise,
+    .site-slide {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
