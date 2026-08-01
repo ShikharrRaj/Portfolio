@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Newsreader, Space_Grotesk } from "next/font/google";
+import {
+  Inter,
+  JetBrains_Mono,
+  Newsreader,
+  Press_Start_2P,
+  Space_Grotesk,
+} from "next/font/google";
 import "./globals.css";
 import { profile } from "@/data/portfolio";
 
@@ -32,6 +38,15 @@ const newsreader = Newsreader({
   // fallback explicitly keeps the build quiet and the swap stable.
   adjustFontFallback: false,
   fallback: ["Georgia", "Times New Roman", "serif"],
+});
+
+// The world's voice. One weight, 8px native — never scale it off a
+// multiple of its own grid or the letterforms go soft.
+const pressStart = Press_Start_2P({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-pixel",
+  display: "swap",
 });
 
 const siteUrl = "https://your-domain.com";
@@ -74,7 +89,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0F1115",
+  themeColor: "#7FD3F7",
   width: "device-width",
   initialScale: 1,
 };
@@ -99,7 +114,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrains.variable} ${newsreader.variable}`}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrains.variable} ${newsreader.variable} ${pressStart.variable}`}
     >
       <body>
         {children}

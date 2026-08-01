@@ -254,3 +254,61 @@
     }
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  PIXEL WORLD — Central Park                                         */
+/*  ------------------------------------------------------------------ */
+/*  A bright 2D world, not a document. Panels are game dialogue boxes:  */
+/*  hard edges, chunky borders, a dropped shadow with no blur — blur is */
+/*  what makes pixel UI look cheap.                                     */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  /* Parchment dialogue box with a double border and a hard shadow. */
+  .world-panel {
+    background: #f7ecd2;
+    border: 3px solid #8a5628;
+    box-shadow:
+      0 0 0 3px #f7ecd2,
+      0 0 0 6px #5a3a1c,
+      6px 6px 0 6px rgba(43, 58, 34, 0.35);
+    image-rendering: pixelated;
+  }
+
+  /* Signposts bob so the eye finds them without an arrow telling it to. */
+  @keyframes world-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-1.5px);
+    }
+  }
+  .world-bob {
+    animation: world-bob 1.8s steps(3, end) infinite;
+    transform-box: fill-box;
+  }
+
+  @keyframes world-pop {
+    from {
+      transform: scale(0.96) translateY(6px);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  .world-pop {
+    animation: world-pop 0.16s steps(4, end) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .world-bob,
+    .world-pop {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+  }
+}

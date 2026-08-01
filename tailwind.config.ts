@@ -30,6 +30,7 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
+        pixel: ["var(--font-pixel)", "ui-monospace", "monospace"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       fontSize: {

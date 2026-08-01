@@ -1,7 +1,7 @@
-import { PersonalOS } from "@/components/os/PersonalOS";
+import { PixelWorld } from "@/components/world/PixelWorld";
 
-/* The Personal OS replaces the section-scroll portfolio entirely.
- * There is no hero: the entry point is a question (PRD R1). */
+/* An afternoon in Central Park. The park is the portfolio — signposts
+ * are the navigation, and every panel is a place you walked to. */
 export default function Home() {
-  return <PersonalOS />;
+  return <PixelWorld />;
 }
