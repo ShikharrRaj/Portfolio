@@ -1,0 +1,480 @@
+{
+  "$comment": "Canonical, machine-readable source of truth for role boundaries and the handoff DAG. Consumed by scripts/lint-role-boundaries.mjs and scripts/lint-handoff-chain.mjs. Every .claude/agents/*.md role file MUST have an entry here. writeGlobs = paths a role may Write/Edit; readOnly roles have NO writeGlobs and must omit Write/Edit from their subagent `tools`. See docs/engineering-os-standard.md §6.",
+  "externalInputs": [
+    "ceo-request",
+    "prd-raw"
+  ],
+  "sharedDomains": [
+    {
+      "path": "prisma/schema.prisma",
+      "owners": [
+        "backend-lead",
+        "database"
+      ],
+      "rule": "Backend owns application-facing models; Database owns indexes/migrations/tuning. Same file -> tool wall cannot separate. Advisory + arbitration only.",
+      "arbiter": "engineering-manager"
+    },
+    {
+      "path": "src/components/**",
+      "owner": "frontend-lead",
+      "advisors": [
+        "accessibility",
+        "seo",
+        "performance",
+        "animation"
+      ],
+      "rule": "Cross-cutting roles emit findings on the same React files; they do NOT edit. Frontend Lead applies. EM arbitrates disputes.",
+      "arbiter": "engineering-manager"
+    }
+  ],
+  "roles": {
+    "engineering-manager": {
+      "tier": "orchestrator",
+      "writeGlobs": [
+        "projects/**/plan/**",
+        "projects/**/escalations/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "ceo-request",
+        "prd-approved",
+        "review-findings",
+        "security-findings",
+        "qa-report",
+        "design-findings",
+        "dependency-report",
+        "cost-findings"
+      ],
+      "produces": [
+        "delivery-plan",
+        "release-decision",
+        "execution-plan",
+        "retro-report"
+      ]
+    },
+    "product-manager": {
+      "tier": "lead",
+      "writeGlobs": [
+        "projects/**/prd/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "ceo-request",
+        "prd-raw"
+      ],
+      "produces": [
+        "prd-approved"
+      ]
+    },
+    "staff-architect": {
+      "tier": "lead",
+      "writeGlobs": [
+        "projects/**/arch/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "delivery-plan",
+        "prd-approved",
+        "research-report"
+      ],
+      "produces": [
+        "architecture-spec",
+        "adr"
+      ]
+    },
+    "frontend-lead": {
+      "tier": "lead",
+      "writeGlobs": [
+        "app/**",
+        "src/**",
+        "tailwind.config.ts",
+        "tailwind.config.js",
+        "components.json",
+        "public/**"
+      ],
+      "readOnly": false,
+      "disallowed": [],
+      "consumes": [
+        "architecture-spec",
+        "ui-spec",
+        "api-contract"
+      ],
+      "produces": [
+        "frontend-impl"
+      ]
+    },
+    "backend-lead": {
+      "tier": "lead",
+      "writeGlobs": [
+        "src/server/**",
+        "src/api/**",
+        "prisma/schema.prisma"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/app/**)",
+        "Write(src/ai/**)"
+      ],
+      "consumes": [
+        "architecture-spec"
+      ],
+      "produces": [
+        "backend-impl",
+        "api-contract"
+      ]
+    },
+    "ai-platform-lead": {
+      "tier": "lead",
+      "writeGlobs": [
+        "src/ai/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/app/**)",
+        "Write(src/server/**)"
+      ],
+      "consumes": [
+        "architecture-spec",
+        "prompt-spec"
+      ],
+      "produces": [
+        "ai-impl"
+      ]
+    },
+    "uiux-lead": {
+      "tier": "lead",
+      "writeGlobs": [
+        "projects/**/design/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "prd-approved",
+        "architecture-spec"
+      ],
+      "produces": [
+        "ui-spec"
+      ]
+    },
+    "database": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "prisma/migrations/**",
+        "prisma/schema.prisma"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/app/**)",
+        "Write(src/ai/**)"
+      ],
+      "consumes": [
+        "architecture-spec",
+        "api-contract"
+      ],
+      "produces": [
+        "schema-migration"
+      ]
+    },
+    "devops": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "infra/**",
+        ".github/**",
+        "docker/**",
+        "Dockerfile",
+        "*.yml",
+        "*.yaml"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "backend-impl",
+        "frontend-impl"
+      ],
+      "produces": [
+        "deploy-config",
+        "dependency-report"
+      ]
+    },
+    "qa-automation": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "tests/**",
+        "e2e/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "frontend-impl",
+        "backend-impl",
+        "ai-impl",
+        "prd-approved"
+      ],
+      "produces": [
+        "test-suite",
+        "qa-report"
+      ]
+    },
+    "security-reviewer": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "backend-impl",
+        "frontend-impl",
+        "ai-impl",
+        "deploy-config"
+      ],
+      "produces": [
+        "security-findings"
+      ]
+    },
+    "code-reviewer": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "frontend-impl",
+        "backend-impl",
+        "ai-impl"
+      ],
+      "produces": [
+        "review-findings"
+      ]
+    },
+    "performance": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "frontend-impl",
+        "backend-impl"
+      ],
+      "produces": [
+        "perf-findings",
+        "cost-findings"
+      ]
+    },
+    "prompt-engineer": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "src/ai/prompts/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/app/**)",
+        "Write(src/server/**)"
+      ],
+      "consumes": [
+        "architecture-spec",
+        "ai-impl"
+      ],
+      "produces": [
+        "prompt-spec"
+      ]
+    },
+    "ai-evaluation": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "src/ai/evals/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/app/**)",
+        "Write(src/server/**)"
+      ],
+      "consumes": [
+        "ai-impl",
+        "prompt-spec"
+      ],
+      "produces": [
+        "eval-report"
+      ]
+    },
+    "accessibility": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "frontend-impl",
+        "ui-spec"
+      ],
+      "produces": [
+        "a11y-findings"
+      ]
+    },
+    "documentation": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "docs/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "delivery-plan",
+        "architecture-spec",
+        "frontend-impl",
+        "backend-impl"
+      ],
+      "produces": [
+        "docs-artifact"
+      ]
+    },
+    "seo": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "frontend-impl",
+        "ui-spec"
+      ],
+      "produces": [
+        "seo-findings"
+      ]
+    },
+    "animation": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "ui-spec",
+        "frontend-impl"
+      ],
+      "produces": [
+        "animation-spec"
+      ]
+    },
+    "research": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "projects/**/research/**"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "prd-approved"
+      ],
+      "produces": [
+        "research-report"
+      ]
+    },
+    "design-guardian": {
+      "tier": "specialist",
+      "writeGlobs": [],
+      "readOnly": true,
+      "disallowed": [
+        "Write",
+        "Edit"
+      ],
+      "consumes": [
+        "frontend-impl",
+        "ui-spec"
+      ],
+      "produces": [
+        "design-findings"
+      ]
+    },
+    "git-operations": {
+      "tier": "specialist",
+      "writeGlobs": [
+        "CHANGELOG.md"
+      ],
+      "readOnly": false,
+      "disallowed": [
+        "Write(src/**)",
+        "Edit(src/**)"
+      ],
+      "consumes": [
+        "release-decision"
+      ],
+      "produces": [
+        "release-notes"
+      ]
+    }
+  },
+  "$project": "Auto-tuned by eos-install for app layout (frontend-only).",
+  "$factory": "Software Factory v2.0 (2026-07-24): +research, +design-guardian (read-only), +git-operations. Pipeline codified in playbooks/software-factory.md. Planning/dependency/cost/observability/analytics/knowledge/retro are SKILLS run by existing owners, not roles.",
+  "nestedDomains": [
+    {
+      "path": "src/server/**",
+      "owner": "backend-lead",
+      "lead": "frontend-lead",
+      "rule": "Frontend-only project: frontend-lead owns src/** broadly; backend-lead carve-out activates if a server is added."
+    },
+    {
+      "path": "src/api/**",
+      "owner": "backend-lead",
+      "lead": "frontend-lead",
+      "rule": "Dormant backend carve-out."
+    },
+    {
+      "path": "src/ai/**",
+      "owner": "ai-platform-lead",
+      "lead": "frontend-lead",
+      "rule": "AI carve-out (activates with Assistant/AskMyWork backend)."
+    },
+    {
+      "path": "src/ai/prompts/**",
+      "owner": "prompt-engineer",
+      "lead": "ai-platform-lead",
+      "rule": "Prompt authoring carve-out."
+    },
+    {
+      "path": "src/ai/evals/**",
+      "owner": "ai-evaluation",
+      "lead": "ai-platform-lead",
+      "rule": "Eval harness carve-out."
+    }
+  ]
+}

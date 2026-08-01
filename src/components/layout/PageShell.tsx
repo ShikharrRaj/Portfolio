@@ -10,6 +10,7 @@ import { Loader } from "@/components/ui/Loader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { ProgressTracker } from "@/components/ui/ProgressTracker";
 import { CommandPalette } from "@/components/ui/CommandPalette";
+import { Assistant } from "@/components/ui/Assistant";
 import { Navbar } from "@/components/layout/Navbar";
 
 /**
@@ -28,6 +29,7 @@ export function PageShell({ children }: { children: React.ReactNode }) {
           <Navbar />
           <JourneyTracker />
           <ProgressTracker />
+          <Assistant />
           <motion.main
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

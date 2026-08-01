@@ -10,10 +10,30 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string>("");
   const { scrollY } = useScroll();
   const { theme, toggle } = useTheme();
 
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 40));
+
+  // Scroll-spy: highlight the nav link for the section currently in view.
+  useEffect(() => {
+    const ids = navLinks.map((l) => l.href.slice(1));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(`#${visible.target.id}`);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5] },
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   // lock body scroll when the mobile menu is open
   useEffect(() => {
@@ -62,15 +82,28 @@ export function Navbar() {
           </button>
 
           <div className="hidden items-center gap-1 md:flex">
-            {navLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => go(link.href)}
-                className="relative rounded-full px-4 py-2 text-sm text-muted transition-colors hover:text-ink"
-              >
-                {link.label}
-              </button>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = active === link.href;
+              return (
+                <button
+                  key={link.href}
+                  onClick={() => go(link.href)}
+                  className={cn(
+                    "relative rounded-full px-4 py-2 text-sm transition-colors",
+                    isActive ? "text-ink" : "text-muted hover:text-ink",
+                  )}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full bg-line/[0.07]"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{link.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-2">

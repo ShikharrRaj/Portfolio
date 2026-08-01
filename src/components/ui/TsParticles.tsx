@@ -30,7 +30,7 @@ export function TsParticles({ id = "tsparticles", className }: TsParticlesProps)
       detectRetina: true,
       particles: {
         number: { value: 36, density: { enable: true } },
-        color: { value: ["#4f46e5", "#38bdf8", "#818cf8"] },
+        color: { value: ["#2f855a", "#68d391", "#38a169"] },
         // No connecting lines — quieter, more minimal field of drifting dots.
         links: { enable: false },
         move: {

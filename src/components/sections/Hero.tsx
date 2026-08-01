@@ -2,8 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { profile, heroMetrics } from "@/data/portfolio";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { profile, dashboardMetrics, dashboardStatus } from "@/data/portfolio";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { GradientBlobs } from "@/components/ui/GradientBlobs";
@@ -32,11 +33,24 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export function Hero() {
   const typed = useTypewriter(profile.roles);
   const { theme } = useTheme();
+  const reduced = usePrefersReducedMotion();
   const sceneRef = useRef<HTMLDivElement>(null);
   const sceneInView = useInView(sceneRef, { margin: "120px" });
 
+  // Gentle scroll parallax: copy drifts up + fades, sphere moves faster,
+  // giving the hero cinematic depth as you scroll away.
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -70]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, reduced ? 1 : 0]);
+  const sceneY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -130]);
+
   return (
     <section
+      ref={heroRef}
       id="top"
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-28"
     >
@@ -51,7 +65,7 @@ export function Hero() {
 
       <div className="container-page grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
         {/* Left: copy */}
-        <div className="flex flex-col items-start">
+        <motion.div style={{ y: copyY, opacity: copyOpacity }} className="flex flex-col items-start">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -101,21 +115,40 @@ export function Hero() {
             {profile.tagline}
           </motion.p>
 
-          {/* leadership impact metrics */}
+          {/* executive dashboard — system readouts, not marketing counters */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease, delay: 1.1 }}
-            className="mt-7 flex flex-wrap gap-x-6 gap-y-3"
+            className="mt-8 w-full max-w-xl overflow-hidden rounded-2xl glass"
           >
-            {heroMetrics.map((m) => (
-              <div key={m.label} className="flex flex-col">
-                <span className="font-display text-lg font-semibold text-gradient">
-                  {m.value}
+            <div className="flex items-center justify-between border-b border-line/10 px-4 py-2.5">
+              <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.15em] text-accent-soft">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-soft opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-soft" />
                 </span>
-                <span className="text-xs text-muted">{m.label}</span>
-              </div>
-            ))}
+                {dashboardStatus.availability}
+              </span>
+              <span className="font-mono text-[11px] text-faint">
+                {dashboardStatus.location}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-4 py-4 sm:grid-cols-3">
+              {dashboardMetrics.map((m) => (
+                <div key={m.label}>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-faint">
+                    {m.label}
+                  </p>
+                  <p className="mt-0.5 font-display text-base font-semibold text-ink">
+                    {m.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-line/10 px-4 py-2.5 font-mono text-[11px] text-muted">
+              <span className="text-accent-soft">focus</span> · {dashboardStatus.focus}
+            </div>
           </motion.div>
 
           <motion.div
@@ -148,10 +181,11 @@ export function Hero() {
               Contact Me
             </MagneticButton>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Right: 3D crystal + profile card */}
         <motion.div
+          style={{ y: sceneY }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease, delay: 0.5 }}

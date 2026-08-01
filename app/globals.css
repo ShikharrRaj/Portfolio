@@ -15,22 +15,23 @@
 /* ------------------------------------------------------------------ */
 @layer base {
   :root {
-    /* "Indigo Slate" — cool, executive palette inspired by Linear, Vercel,
-       Apple and Stripe. Indigo primary, sky-blue secondary, on near-black.
+    /* "Engineering OS" — a mature graphite canvas with a forest-green accent.
+       Deliberately non-AI: no violet, no neon, no cyan glow. Reads like
+       professional engineering software (GitHub / Linear / Notion).
        Values are space-separated RGB so they compose with Tailwind's
        <alpha-value> syntax. Dark is the default. */
-    --bg: 9 9 11; /* #09090B */
-    --surface: 17 24 39; /* #111827 */
-    --elevated: 26 32 48;
-    --line: 250 250 250; /* cool white, used at low alpha for hairlines */
-    --ink: 250 250 250; /* #FAFAFA */
-    --muted: 161 161 170; /* #A1A1AA */
-    --faint: 113 113 122; /* #71717A */
+    --bg: 15 17 21; /* #0F1115 */
+    --surface: 26 29 36; /* #1A1D24 */
+    --elevated: 34 38 47;
+    --line: 255 255 255; /* white, used at low alpha for hairlines (0.08) */
+    --ink: 248 247 244; /* #F8F7F4 warm off-white */
+    --muted: 156 163 175; /* #9CA3AF */
+    --faint: 107 114 128; /* #6B7280 */
 
-    --accent: 79 70 229; /* #4F46E5 indigo — primary */
-    --accent-soft: 129 140 248; /* #818CF8 */
-    --gold: 59 130 246; /* #3B82F6 — mid gradient stop (legacy token name) */
-    --ember: 56 189 248; /* #38BDF8 sky — secondary accent (legacy token name) */
+    --accent: 47 133 90; /* #2F855A forest green — primary */
+    --accent-soft: 104 211 145; /* #68D391 mint — secondary */
+    --gold: 56 161 105; /* #38A169 mid green (mid gradient stop) */
+    --ember: 34 197 94; /* #22C55E success green (secondary slot) */
 
     --font-sans: "Inter", system-ui, sans-serif;
     --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
@@ -40,18 +41,18 @@
   }
 
   :root.light {
-    --bg: 248 250 252;
+    --bg: 249 249 247; /* warm paper */
     --surface: 255 255 255;
     --elevated: 255 255 255;
-    --line: 15 23 42;
-    --ink: 15 23 42; /* slate-900 */
-    --muted: 71 85 105; /* slate-600 */
-    --faint: 100 116 139; /* slate-500 */
+    --line: 17 22 20;
+    --ink: 24 28 26; /* near-black warm */
+    --muted: 82 90 96;
+    --faint: 120 128 132;
 
-    --accent: 79 70 229; /* #4F46E5 */
-    --accent-soft: 99 102 241; /* #6366F1 */
-    --gold: 37 99 235; /* #2563EB */
-    --ember: 14 165 233; /* #0EA5E9 */
+    --accent: 39 103 73; /* #276749 deeper forest for contrast on light */
+    --accent-soft: 56 161 105; /* #38A169 */
+    --gold: 47 133 90; /* #2F855A */
+    --ember: 22 163 74; /* #16A34A */
 
     color-scheme: light;
   }

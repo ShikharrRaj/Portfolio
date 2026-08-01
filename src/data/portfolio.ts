@@ -210,7 +210,7 @@ export const projects: Project[] = [
       "A responsive web app with high-performance, pixel-perfect UI built in a tight design-engineering loop, deployed from the frontend.",
     impact: "Faster turnaround and reduced UI rework in a fast-paced agency delivery.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#4f46e5", "#38bdf8"],
+    accent: ["#2f855a", "#68d391"],
     confidential: true,
   },
   {
@@ -225,7 +225,7 @@ export const projects: Project[] = [
       "A web application streamlining insurance tracking workflows for agents and Relationship Managers.",
     impact: "Improved workflow efficiency for distribution teams.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#3b82f6", "#6366f1"],
+    accent: ["#276749", "#38a169"],
     confidential: true,
   },
   {
@@ -239,7 +239,7 @@ export const projects: Project[] = [
       "A clean, customer-facing web app for self-serve insurance tracking.",
     impact: "Reduced support load via self-service visibility.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#6366f1", "#38bdf8"],
+    accent: ["#38a169", "#68d391"],
     confidential: true,
   },
   {
@@ -253,7 +253,7 @@ export const projects: Project[] = [
       "A guided eKYC web experience optimizing the customer onboarding process.",
     impact: "Smoother onboarding with fewer drop-offs.",
     stack: ["Angular", "TypeScript", "Tailwind CSS"],
-    accent: ["#4f46e5", "#3b82f6"],
+    accent: ["#2f855a", "#38a169"],
     confidential: true,
   },
   {
@@ -269,7 +269,7 @@ export const projects: Project[] = [
     impact:
       "UI/workflow efficiency up 12–33%, backend performance up to 36%, testing efficiency up 18%.",
     stack: ["React", "NestJS", "TypeScript", "Jenkins"],
-    accent: ["#1e3a8a", "#4f46e5"],
+    accent: ["#1c4532", "#2f855a"],
     confidential: true,
   },
   {
@@ -283,7 +283,7 @@ export const projects: Project[] = [
       "Built an AI pipeline integrating Claude with Figma (MCP) to automate design-to-code and accelerate delivery.",
     impact: "Increased development productivity and efficiency by 25–30%.",
     stack: ["Claude", "Figma MCP", "TypeScript", "Automation"],
-    accent: ["#38bdf8", "#818cf8"],
+    accent: ["#68d391", "#9ae6b4"],
   },
   {
     title: "Employee Management System",
@@ -296,7 +296,7 @@ export const projects: Project[] = [
       "A full-stack app with user and admin roles: secure registration, full CRUD for admins, a Spring Boot microservices backend and a responsive React frontend.",
     impact: "Clean separation of roles with a scalable microservices backend.",
     stack: ["Java", "Spring Boot", "React", "MySQL"],
-    accent: ["#4338ca", "#3b82f6"],
+    accent: ["#22543d", "#38a169"],
     github: "https://github.com/shikhar-rsp",
   },
   {
@@ -310,7 +310,7 @@ export const projects: Project[] = [
       "A system accepting configurable CSV/XLSX inputs with a Template Module to define and manage expected field ordering, backed by Java and a React frontend.",
     impact: "Reliable bulk processing with user-defined templates.",
     stack: ["Java", "React", "JavaScript", "MySQL"],
-    accent: ["#3b82f6", "#38bdf8"],
+    accent: ["#38a169", "#68d391"],
     github: "https://github.com/shikhar-rsp",
   },
   {
@@ -325,7 +325,7 @@ export const projects: Project[] = [
     impact:
       "Selected by CIIA (Institution's Innovation Council, MHRD, Govt. of India) as an innovation model.",
     stack: ["Python", "YOLOv4", "OpenCV", "scikit-learn", "NumPy"],
-    accent: ["#22d3ee", "#4f46e5"],
+    accent: ["#68d391", "#2f855a"],
     github: "https://github.com/shikhar-rsp",
   },
 ];
@@ -510,11 +510,11 @@ export const achievements: Achievement[] = [
 // Mission-based navigation. `label` is the concise nav chip; `title` is the
 // full "Leadership Journey" name used in section headings + command palette.
 export const navLinks = [
-  { label: "Mission", title: "Mission Briefing", href: "#about" },
+  { label: "Mission", title: "Mission Brief", href: "#about" },
   { label: "Journey", title: "Leadership Journey", href: "#experience" },
   { label: "Products", title: "Products Built", href: "#projects" },
-  { label: "Expertise", title: "Engineering Expertise", href: "#skills" },
   { label: "Architecture", title: "Architecture Lab", href: "#architecture" },
+  { label: "Decisions", title: "Engineering Decisions", href: "#decisions" },
   { label: "Connect", title: "Let's Build Together", href: "#contact" },
 ] as const;
 
@@ -809,12 +809,14 @@ export const futureVision = {
  * ------------------------------------------------------------------- */
 // Ordered list of section ids that count toward exploration progress.
 export const journeySections = [
-  { id: "about", title: "Mission Briefing" },
+  { id: "about", title: "Mission Brief" },
   { id: "experience", title: "Leadership Journey" },
   { id: "projects", title: "Products Built" },
   { id: "skills", title: "Engineering Expertise" },
   { id: "architecture", title: "Architecture Lab" },
-  { id: "achievements", title: "Achievements" },
+  { id: "decisions", title: "Engineering Decisions" },
+  { id: "philosophy", title: "How I Think" },
+  { id: "achievements", title: "Impact" },
   { id: "future", title: "Future Vision" },
   { id: "contact", title: "Let's Build Together" },
 ] as const;
@@ -837,3 +839,170 @@ export const badges: Badge[] = [
   { id: "explorer", label: "Portfolio Explorer", icon: "Trophy", section: "*", hint: "Explore the entire journey" },
 ];
 
+
+/* ---------------------------------------------------------------------
+ *  Executive dashboard — hero system readouts
+ * ------------------------------------------------------------------- */
+export const dashboardMetrics = [
+  { label: "Current Role", value: "Tech Lead", kind: "text" as const },
+  { label: "Experience", value: "3.6+ yrs", kind: "text" as const },
+  { label: "Products Delivered", value: "9+", kind: "text" as const },
+  { label: "Systems Built", value: "5+", kind: "text" as const },
+  { label: "Technologies", value: "25+", kind: "text" as const },
+  { label: "Reliability Mindset", value: "99.9%", kind: "text" as const },
+];
+
+export const dashboardStatus = {
+  availability: "OPEN TO OPPORTUNITIES",
+  focus: "AI-assisted engineering · scalable fintech systems",
+  location: "Mumbai, IN",
+};
+
+/* ---------------------------------------------------------------------
+ *  Engineering Decision Log — the "why" behind the stack
+ * ------------------------------------------------------------------- */
+export type EngineeringDecision = {
+  tech: string;
+  question: string;
+  context: string;
+  decision: string;
+  tradeoff: string;
+  reconsider: string;
+};
+
+export const engineeringDecisions: EngineeringDecision[] = [
+  {
+    tech: "Angular",
+    question: "Why Angular for enterprise client apps?",
+    context: "Bank & wealth clients with large, long-lived apps and multiple contributors.",
+    decision:
+      "Chose Angular for its opinionated structure, strong typing and batteries-included tooling — predictable for big teams and enterprise governance.",
+    tradeoff: "More boilerplate and a steeper ramp than React, in exchange for consistency at scale.",
+    reconsider: "For greenfield product work I'd still reach for React/Next.js; Angular earns its place where structure and standardization matter most.",
+  },
+  {
+    tech: "React",
+    question: "Why React for product surfaces?",
+    context: "Fast-moving product UIs where iteration speed and ecosystem matter.",
+    decision:
+      "React (with Next.js) for its ecosystem, rendering flexibility and hiring pool — the fastest path from idea to polished UI.",
+    tradeoff: "Freedom means you own architecture decisions React won't make for you.",
+    reconsider: "Very little — I'd lean harder into RSC/streaming and a design-system-first setup from day one.",
+  },
+  {
+    tech: "NestJS / Node",
+    question: "Why NestJS on the backend?",
+    context: "Corporate banking APIs needing structure, testability and clear module boundaries.",
+    decision:
+      "NestJS for a modular, DI-driven architecture that maps cleanly onto payment domains and scales with the team — lifted backend performance up to +36%.",
+    tradeoff: "Heavier than a bare Express service; the structure pays off past a certain size.",
+    reconsider: "For latency-critical paths I'd evaluate Go, but NestJS remains my default for domain-rich services.",
+  },
+  {
+    tech: "AWS",
+    question: "Why AWS for hosting & infra?",
+    context: "Regulated fintech workloads needing reliability and a broad managed-service catalog.",
+    decision:
+      "AWS for its maturity, compliance posture and breadth — fewer moving parts to self-manage in regulated environments.",
+    tradeoff: "Cost and lock-in require discipline and good cost hygiene.",
+    reconsider: "I'd invest earlier in IaC and cost guardrails so infra stays boring and predictable.",
+  },
+  {
+    tech: "CI/CD (Jenkins)",
+    question: "Why automate testing & delivery?",
+    context: "Multiple modules shipping continuously with a small team.",
+    decision:
+      "Automated CI/CD pipelines to make releases routine and safe — improved testing efficiency by ~18%.",
+    tradeoff: "Upfront pipeline investment vs. shipping features that week.",
+    reconsider: "I'd standardize pipelines as reusable templates sooner so every new service inherits them.",
+  },
+  {
+    tech: "AI Pipelines",
+    question: "Why build a Claude × Figma pipeline?",
+    context: "Design-to-code was the repetitive bottleneck across client projects.",
+    decision:
+      "Automated the design-to-code path with Claude + Figma MCP, keeping engineers in the loop for taste and correctness — +25–30% productivity.",
+    tradeoff: "Pipeline maintenance vs. one-off speed; wins compound across many screens.",
+    reconsider: "Nothing major — I'd expand the same 'AI accelerates, humans decide' pattern to more of the SDLC.",
+  },
+];
+
+/* ---------------------------------------------------------------------
+ *  Engineering Philosophy — "How I Think"
+ * ------------------------------------------------------------------- */
+export type PhilosophyStep = { step: string; title: string; body: string };
+
+export const philosophy: PhilosophyStep[] = [
+  { step: "01", title: "Understand the Business", body: "Start from the outcome. What problem, for whom, and why now — before a line of code." },
+  { step: "02", title: "Identify Constraints", body: "Time, budget, compliance, team, scale. Constraints shape the right architecture, not the ideal one." },
+  { step: "03", title: "Design the Architecture", body: "Choose boundaries and tradeoffs deliberately. Optimize for change, not cleverness." },
+  { step: "04", title: "Build the MVP", body: "Ship the smallest thing that proves the idea and can survive production." },
+  { step: "05", title: "Measure", body: "Instrument it. Let data — not opinion — decide what to do next." },
+  { step: "06", title: "Optimize", body: "Improve the paths that matter: latency, reliability, developer velocity." },
+  { step: "07", title: "Automate", body: "Turn the repeatable into pipelines so the team compounds its leverage." },
+];
+
+/* ---------------------------------------------------------------------
+ *  Leadership qualities (visual scorecard)
+ * ------------------------------------------------------------------- */
+export const leadershipQualities = [
+  { label: "Ownership", value: 95, note: "End-to-end accountability, frontend to deploy." },
+  { label: "Architecture", value: 90, note: "System design & deliberate tradeoffs." },
+  { label: "Mentorship", value: 88, note: "Grew teammates; −15–20% production issues." },
+  { label: "Delivery", value: 92, note: "+15–20% team delivery consistency." },
+  { label: "Communication", value: 90, note: "Stakeholder alignment, clear tradeoffs." },
+  { label: "Decision Making", value: 89, note: "Pragmatic calls under real constraints." },
+] as const;
+
+/* ---------------------------------------------------------------------
+ *  AI Assistant — curated knowledge base ("Ask about Shikhar")
+ *  Not an LLM: deterministic keyword matching over hand-written answers.
+ * ------------------------------------------------------------------- */
+export type AssistantEntry = { q: string; keywords: string[]; a: string };
+
+export const assistantSuggestions = [
+  "How does Shikhar approach system design?",
+  "What's his biggest technical challenge?",
+  "How does he lead teams?",
+  "Why AI?",
+  "Why consulting?",
+  "How does he architect scalable systems?",
+];
+
+export const assistantKB: AssistantEntry[] = [
+  {
+    q: "How does Shikhar approach system design?",
+    keywords: ["system", "design", "architect", "architecture", "scalable", "scale", "scaling"],
+    a: "I start from the business outcome and constraints, then design boundaries deliberately — modular services (e.g. NestJS across payment domains), idempotent APIs, and controls like maker/checker as first-class primitives. I optimize for change and reliability over cleverness, and I measure before I optimize. On Axis Neo this lifted backend performance up to +36%.",
+  },
+  {
+    q: "What has been his biggest technical challenge?",
+    keywords: ["challenge", "hard", "difficult", "biggest", "problem"],
+    a: "Delivering high-stakes corporate banking modules (Payments Maker/Checker, GIFT City, NCRP fraud) where correctness, auditability and reliability are non-negotiable — while keeping velocity. I solved it with modular NestJS services, idempotent APIs, strong automated testing (+18% efficiency) and disciplined CI/CD.",
+  },
+  {
+    q: "How does he lead teams?",
+    keywords: ["lead", "leadership", "team", "manage", "mentor", "mentorship"],
+    a: "By multiplying the team, not just my own output: driving architecture decisions, code reviews and sprint planning (+15–20% delivery consistency), mentoring engineers (−15–20% production issues), and aligning stakeholders end-to-end. Leverage over raw output.",
+  },
+  {
+    q: "Why AI?",
+    keywords: ["ai", "artificial", "claude", "llm", "automation", "pipeline"],
+    a: "Because AI shifts the engineering bottleneck from typing to taste and judgment. I built a Claude × Figma (MCP) design-to-code pipeline that raised team productivity 25–30% — with engineers kept in the loop for correctness. AI accelerates; humans decide.",
+  },
+  {
+    q: "Why consulting / management?",
+    keywords: ["consulting", "management", "manager", "cto", "future", "why"],
+    a: "I'm most effective where technology, leadership, strategy and business problem-solving meet. I enjoy translating ambiguous business problems into scalable systems and aligning teams to ship them — which is exactly the CTO/consulting path I'm building toward.",
+  },
+  {
+    q: "How does he architect scalable systems?",
+    keywords: ["scalable", "scale", "reliability", "performance", "resilient"],
+    a: "Deliberate boundaries, independent scaling, and safety under failure: modular services, idempotency, async validation to keep controls without killing latency, and blast-radius isolation. Then instrument everything and automate the repeatable so the system stays boring and predictable.",
+  },
+  {
+    q: "What's his stack?",
+    keywords: ["stack", "tech", "technologies", "tools", "languages"],
+    a: "Frontend: React/Next.js, Angular, TypeScript, Tailwind. Backend: Node/NestJS, Java/Spring Boot, MySQL. Cloud/DevOps: AWS, Docker/Kubernetes, Jenkins CI/CD, Linux. AI: Claude, Cursor/Copilot, Figma MCP. Explore the Engineering Expertise section to see years, projects and impact per technology.",
+  },
+];

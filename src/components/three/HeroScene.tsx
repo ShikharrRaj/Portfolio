@@ -8,13 +8,14 @@ import * as THREE from "three";
 const COUNT = 1900;
 const RADIUS = 1.7;
 
-// Indigo → sky palette for per-point vertex colors. The highlight tone
-// shifts deeper in light mode so points stay visible on a pale background.
-const C1 = new THREE.Color("#4f46e5"); // indigo
-const C2 = new THREE.Color("#38bdf8"); // sky / cyan
+// Forest → mint palette for per-point vertex colors. Reads as a system
+// topology graph, not an AI particle cloud. The highlight tone shifts deeper
+// in light mode so points stay visible on a pale background.
+const C1 = new THREE.Color("#2f855a"); // forest green
+const C2 = new THREE.Color("#68d391"); // mint
 const HIGHLIGHT = {
-  dark: new THREE.Color("#818cf8"), // soft indigo
-  light: new THREE.Color("#4338ca"), // deep indigo
+  dark: new THREE.Color("#9ae6b4"), // light mint
+  light: new THREE.Color("#276749"), // deep forest
 };
 
 type Theme = "dark" | "light";
@@ -102,7 +103,7 @@ function ParticleSphere({ theme }: { theme: Theme }) {
         <mesh>
           <icosahedronGeometry args={[RADIUS * 0.62, 1]} />
           <meshBasicMaterial
-            color={light ? "#4f46e5" : "#818cf8"}
+            color={light ? "#2f855a" : "#68d391"}
             wireframe
             transparent
             opacity={light ? 0.35 : 0.32}

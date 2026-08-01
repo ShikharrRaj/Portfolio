@@ -13,6 +13,7 @@ import {
   Network,
   CalendarClock,
   TerminalSquare,
+  Sparkles,
 } from "lucide-react";
 import { navLinks, profile } from "@/data/portfolio";
 import { scrollToSection } from "@/components/providers/SmoothScrollProvider";
@@ -125,6 +126,15 @@ export function CommandPalette() {
               </CommandGroup>
 
               <CommandGroup heading="Actions">
+                <CommandItem
+                  value="ask assistant ai about shikhar question"
+                  onSelect={run(() => window.dispatchEvent(new Event("open-assistant")))}
+                >
+                  <span className={iconBox}>
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </span>
+                  Ask about Shikhar (AI)
+                </CommandItem>
                 <CommandItem
                   value="schedule meeting call book"
                   onSelect={run(() => window.open(profile.meetingUrl, "_blank"))}

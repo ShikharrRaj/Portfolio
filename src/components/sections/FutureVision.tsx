@@ -5,6 +5,7 @@ import { futureVision } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { Reveal } from "@/components/ui/Reveal";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 /**
  * Future Vision — where the journey is heading. A statement of intent plus
@@ -36,17 +37,16 @@ export function FutureVision() {
         <Stagger className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {futureVision.pillars.map((p, i) => (
             <StaggerItem key={p.title}>
-              <motion.div
-                whileHover={{ y: -6 }}
-                className="group h-full rounded-3xl glass p-6 transition-shadow hover:shadow-glow"
-              >
-                <span className="font-mono text-xs text-accent-soft">
-                  0{i + 1}
-                </span>
-                <h3 className="mt-3 font-display text-base font-semibold text-ink">
-                  {p.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{p.body}</p>
+              <motion.div whileHover={{ y: -6 }} className="h-full">
+                <SpotlightCard className="h-full rounded-3xl glass p-6 transition-shadow hover:shadow-glow">
+                  <span className="font-mono text-xs text-accent-soft">
+                    0{i + 1}
+                  </span>
+                  <h3 className="mt-3 font-display text-base font-semibold text-ink">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{p.body}</p>
+                </SpotlightCard>
               </motion.div>
             </StaggerItem>
           ))}

@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { Avatar } from "@/components/ui/Avatar";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function About() {
   const ref = useRef<HTMLDivElement>(null);
@@ -21,7 +22,7 @@ export function About() {
     <section id="about" ref={ref} className="relative py-28 md:py-36">
       <div className="container-page">
         <SectionHeading
-          eyebrow="Mission Briefing"
+          eyebrow="Mission Brief"
           title={about.heading}
           description="A decade of turning hard problems into products people love."
         />
@@ -39,17 +40,18 @@ export function About() {
             <Stagger className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {about.principles.map((pr) => (
                 <StaggerItem key={pr.title}>
-                  <motion.div
-                    whileHover={{ y: -6 }}
-                    data-cursor=""
-                    className="group h-full rounded-2xl glass p-5 transition-shadow hover:shadow-glow"
-                  >
-                    <h3 className="font-display text-base font-semibold text-ink">
-                      {pr.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">
-                      {pr.body}
-                    </p>
+                  <motion.div whileHover={{ y: -6 }} className="h-full">
+                    <SpotlightCard
+                      data-cursor=""
+                      className="h-full rounded-2xl glass p-5 transition-shadow hover:shadow-glow"
+                    >
+                      <h3 className="font-display text-base font-semibold text-ink">
+                        {pr.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted">
+                        {pr.body}
+                      </p>
+                    </SpotlightCard>
                   </motion.div>
                 </StaggerItem>
               ))}

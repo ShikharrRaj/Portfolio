@@ -6,6 +6,8 @@ import { Projects } from "@/components/sections/Projects";
 import { Skills } from "@/components/sections/Skills";
 import { TechUniverse } from "@/components/sections/TechUniverse";
 import { Architecture } from "@/components/sections/Architecture";
+import { Decisions } from "@/components/sections/Decisions";
+import { Philosophy } from "@/components/sections/Philosophy";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Achievements } from "@/components/sections/Achievements";
 import { FutureVision } from "@/components/sections/FutureVision";
@@ -15,7 +17,7 @@ import { Footer } from "@/components/sections/Footer";
 export default function Home() {
   return (
     <PageShell>
-      {/* 1. Mission Briefing → 8. Connect — the Leadership Journey */}
+      {/* Engineering OS — Mission Brief → Let's Build Together */}
       <Hero />
       <About />
       <Experience />
@@ -23,6 +25,8 @@ export default function Home() {
       <Skills />
       <TechUniverse />
       <Architecture />
+      <Decisions />
+      <Philosophy />
       <Testimonials />
       <Achievements />
       <FutureVision />
