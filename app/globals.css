@@ -71,8 +71,9 @@
   }
 
   body {
-    background-color: rgb(var(--bg));
-    color: rgb(var(--ink));
+    /* The site is light: a pixel-art sky above, paper below. */
+    background-color: #f7faf7;
+    color: #1f2937;
     font-family: var(--font-sans);
     overflow-x: hidden;
   }

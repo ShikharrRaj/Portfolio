@@ -1,7 +1,6 @@
-import { PixelWorld } from "@/components/world/PixelWorld";
+import { Site } from "@/components/site/Site";
 
-/* An afternoon in Central Park. The park is the portfolio — signposts
- * are the navigation, and every panel is a place you walked to. */
+/* Pixel landscape as the hero wallpaper, modern UI over it, portfolio below. */
 export default function Home() {
-  return <PixelWorld />;
+  return <Site />;
 }
