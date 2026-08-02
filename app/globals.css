@@ -423,71 +423,232 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Navigation and section reveal                                      */
+/*  Navigation, reveal, scrollspy, depth                               */
 /*  ------------------------------------------------------------------ */
-/*  Anchor clicks glide rather than teleport, and each section arrives  */
-/*  as it enters the viewport. Both are CSS-only: scroll-driven         */
-/*  animation needs no observer, and where it is unsupported the        */
-/*  content simply renders in its final state.                          */
+/*  All of this is CSS-only — no observer, no client component, no       */
+/*  addition to the 138 B route JS.                                     */
+/*                                                                      */
+/*  IMPORTANT: scroll-driven animations IGNORE animation-duration, so    */
+/*  the global reduced-motion reset (which only zeroes duration) does    */
+/*  NOT stop them. Everything scroll-driven below is therefore authored  */
+/*  inside `prefers-reduced-motion: no-preference` — opting in, rather   */
+/*  than trying to opt out afterwards.                                   */
 /* ------------------------------------------------------------------ */
 @layer utilities {
   html {
     scroll-behavior: smooth;
   }
 
-  @keyframes section-in {
-    from {
-      opacity: 0;
-      transform: translateY(18px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
   }
 
-  /* Progressive enhancement: only browsers that understand scroll-driven
-     animation get the reveal, so nobody else is left with hidden content. */
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: section-in linear both;
-      animation-timeline: view();
-      animation-range: entry 5% cover 22%;
-    }
-  }
-
-  /* The active nav pill is derived from the URL fragment — no JS. */
+  /* The nav underline means "you are here", not "you are hovering" —
+     hover is carried by the pill background instead. */
   .navlink {
     position: relative;
   }
   .navlink::after {
     content: "";
     position: absolute;
-    left: 50%;
-    bottom: 0.28rem;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: 0.3rem;
     height: 1.5px;
-    width: 0;
-    translate: -50% 0;
     border-radius: 2px;
-    background: currentColor;
-    transition: width 0.28s cubic-bezier(0.2, 0.7, 0.3, 1);
+    background: rgb(4 120 87); /* emerald-700 */
+    scale: 0 1;
+    transform-origin: center;
   }
-  .navlink:hover::after,
-  .navlink:focus-visible::after {
-    width: calc(100% - 1.6rem);
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      /* Each section publishes a timeline; timeline-scope hoists the names
+         to the root so the fixed nav — which is not an ancestor or a
+         descendant of the sections — can consume them. */
+      :root {
+        timeline-scope: --s-work, --s-journey, --s-skills, --s-recognition,
+          --s-experience, --s-contact;
+      }
+      #work {
+        view-timeline: --s-work block;
+      }
+      #journey {
+        view-timeline: --s-journey block;
+      }
+      #skills {
+        view-timeline: --s-skills block;
+      }
+      #recognition {
+        view-timeline: --s-recognition block;
+      }
+      #experience {
+        view-timeline: --s-experience block;
+      }
+      #contact {
+        view-timeline: --s-contact block;
+      }
+
+      /* Underline grows while its section crosses the viewport centre. */
+      @keyframes navspy {
+        0%,
+        100% {
+          scale: 0 1;
+        }
+        26%,
+        74% {
+          scale: 1 1;
+        }
+      }
+      .navlink::after {
+        animation: navspy linear both;
+        animation-range: cover 0% cover 100%;
+      }
+      .navlink[href="#work"]::after {
+        animation-timeline: --s-work;
+      }
+      .navlink[href="#journey"]::after {
+        animation-timeline: --s-journey;
+      }
+      .navlink[href="#skills"]::after {
+        animation-timeline: --s-skills;
+      }
+      .navlink[href="#recognition"]::after {
+        animation-timeline: --s-recognition;
+      }
+      .navlink[href="#experience"]::after {
+        animation-timeline: --s-experience;
+      }
+      .navlink[href="#contact"]::after {
+        animation-timeline: --s-contact;
+      }
+
+      /* Section arrival — once per section header, never per card. Eight
+         staggered cards is the template cadence this is trying to avoid. */
+      @keyframes section-in {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .reveal {
+        animation: section-in linear both;
+        animation-timeline: view();
+        animation-range: entry 8% cover 20%;
+      }
+
+      /* Depth. The scene is already correctly z-ordered as a diorama, so
+         the only thing missing was parallax. Amplitude is deliberately
+         small — large parallax reads as 2019. */
+      @keyframes depth-far {
+        to {
+          transform: translate3d(0, 7%, 0);
+        }
+      }
+      @keyframes depth-mid {
+        to {
+          transform: translate3d(0, 4%, 0);
+        }
+      }
+      @keyframes depth-near {
+        to {
+          transform: translate3d(0, -1%, 0);
+        }
+      }
+      @keyframes depth-fore {
+        to {
+          transform: translate3d(0, -5%, 0);
+        }
+      }
+      .px-depth-far,
+      .px-depth-mid,
+      .px-depth-near,
+      .px-depth-fore {
+        animation: linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 100vh;
+        will-change: transform;
+      }
+      .px-depth-far {
+        animation-name: depth-far;
+      }
+      .px-depth-mid {
+        animation-name: depth-mid;
+      }
+      .px-depth-near {
+        animation-name: depth-near;
+      }
+      .px-depth-fore {
+        animation-name: depth-fore;
+      }
+    }
+  }
+
+  /* Reading focus: hovering or focusing one case card recedes the rest.
+     Pointer-only, so it never fires on touch where there is no hover. */
+  @media (hover: hover) {
+    .workgrid article {
+      transition:
+        opacity 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+    .workgrid:has(article:hover) article:not(:hover),
+    .workgrid:has(article:focus-within) article:not(:focus-within) {
+      opacity: 0.5;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
     }
-    .reveal {
-      animation: none;
-      opacity: 1;
-      transform: none;
-    }
-    .navlink::after {
+    .workgrid article {
       transition: none;
     }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Print — recruiters print portfolios and forward the PDF            */
+/* ------------------------------------------------------------------ */
+@media print {
+  .fixed,
+  header[class*="min-h-"] {
+    display: none !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  section {
+    break-inside: avoid;
+    padding: 1rem 0 !important;
+  }
+  article,
+  li {
+    break-inside: avoid;
+  }
+  a[href^="http"]::after,
+  a[href^="mailto"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555;
+  }
+  .workgrid,
+  .grid {
+    display: block !important;
+  }
+  * {
+    animation: none !important;
+    box-shadow: none !important;
+    color: #111 !important;
+    background: #fff !important;
   }
 }

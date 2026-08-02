@@ -22,6 +22,7 @@ const NAV = [
   { label: "Journey", href: "#journey" },
   { label: "Skills", href: "#skills" },
   { label: "Recognition", href: "#recognition" },
+  { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -33,42 +34,62 @@ const CARDS = [
   { tone: "done", label: "Built", value: "Claude × Figma pipeline · +25–30% velocity" },
 ];
 
+/**
+ * Fixed rather than in-flow: the nav used to live inside <header> and
+ * scrolled away for good, so from Recognition onward there was no way back
+ * to Work — and below `md` the link group was hidden entirely, leaving
+ * mobile with no section navigation at all. On small screens the same links
+ * become a scroll-snapping chip row.
+ */
+function Nav() {
+  return (
+    <div className="fixed inset-x-0 top-0 z-40 px-5 pt-4 sm:px-8 sm:pt-5">
+      <div className="mx-auto flex max-w-6xl items-center gap-3">
+        <a
+          href="#top"
+          className="shrink-0 rounded-full bg-white/85 px-4 py-2 text-sm font-semibold tracking-tight text-slate-900 shadow-sm backdrop-blur"
+        >
+          {profile.firstName}
+        </a>
+
+        <nav
+          aria-label="Sections"
+          className="no-scrollbar navrail ml-auto flex min-w-0 snap-x snap-mandatory items-center gap-1 overflow-x-auto rounded-full bg-white/75 p-1 shadow-sm backdrop-blur"
+        >
+          {NAV.map((n) => (
+            <a
+              key={n.href}
+              href={n.href}
+              className="navlink shrink-0 snap-start rounded-full px-3.5 py-1.5 text-sm text-slate-700 transition-colors hover:bg-white hover:text-slate-900 sm:px-4"
+            >
+              {n.label}
+            </a>
+          ))}
+        </nav>
+
+        <a
+          href={profile.resumeUrl}
+          className="hidden shrink-0 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5 sm:block"
+        >
+          Résumé
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function Hero({ layers }: { layers: SceneLayers }) {
   return (
     <header className="relative isolate min-h-[100svh] overflow-hidden bg-[#5197D2]">
       <Landscape layers={layers} />
 
-      <nav className="relative z-20 mx-auto flex max-w-6xl items-center gap-3 px-5 pt-5 sm:px-8 sm:pt-7">
-        <a
-          href="#top"
-          className="rounded-full bg-white/85 px-4 py-2 text-sm font-semibold tracking-tight text-slate-900 shadow-sm backdrop-blur"
-        >
-          {profile.firstName}
-        </a>
-        <div className="ml-auto hidden items-center gap-1 rounded-full bg-white/70 p-1 shadow-sm backdrop-blur md:flex">
-          {NAV.map((n) => (
-            <a
-              key={n.href}
-              href={n.href}
-              className="navlink rounded-full px-4 py-1.5 text-sm text-slate-700 transition-colors hover:bg-white hover:text-slate-900"
-            >
-              {n.label}
-            </a>
-          ))}
-        </div>
-        <a
-          href={profile.resumeUrl}
-          className="ml-auto rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5 md:ml-1"
-        >
-          Résumé
-        </a>
-      </nav>
 
       <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-5 pb-24 pt-16 sm:px-8 sm:pt-24 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
         <div className="site-rise max-w-2xl">
-          <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(15,40,70,0.5)] sm:text-5xl lg:text-6xl">
-            I build systems banks trust
-            <br className="hidden sm:block" /> and teams can maintain.
+          {/* No hard-coded <br>: a fixed break fights a fluid type ramp and
+              lands wrong at every intermediate width. balance does it properly. */}
+          <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(15,40,70,0.5)] sm:text-5xl lg:text-6xl">
+            I build systems banks trust and teams can maintain.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-white/95 drop-shadow-[0_1px_8px_rgba(15,40,70,0.6)] sm:text-lg">
             Tech Lead and AI Product Engineer. Three and a half years across banking, wealth and
@@ -135,10 +156,14 @@ function Section({
       <p className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-emerald-700">
         {eyebrow}
       </p>
-      <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+      <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
         {title}
       </h2>
-      {lede && <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">{lede}</p>}
+      {lede && (
+        <p className="mt-4 max-w-[62ch] text-pretty text-base leading-relaxed text-slate-600">
+          {lede}
+        </p>
+      )}
       <div className="mt-10">{children}</div>
     </section>
   );
@@ -164,7 +189,7 @@ function Stats() {
 
 function Work() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="workgrid grid gap-4 sm:grid-cols-2">
       {caseFiles.map((c) => (
         <article
           key={c.id}
@@ -186,7 +211,7 @@ function Work() {
             {c.client ? `${c.client} · ` : ""}
             {c.year}
           </p>
-          <p className="mt-4 text-sm leading-relaxed text-slate-600">{c.tagline}</p>
+          <p className="mt-4 text-[0.95rem] leading-relaxed text-slate-600">{c.tagline}</p>
 
           <dl className="mt-5 space-y-3 border-t border-slate-100 pt-4">
             <div>
@@ -225,8 +250,13 @@ function Journey() {
   return (
     <ol className="space-y-10">
       {timeline.map((t) => (
-        <li key={t.title} className="grid gap-3 sm:grid-cols-[5rem_1fr] sm:gap-8">
-          <span className="text-sm font-medium tabular-nums text-emerald-700">{t.year}</span>
+        <li key={t.title} className="grid items-start gap-3 sm:grid-cols-[5rem_1fr] sm:gap-8">
+          {/* Sticky, so the year stays on screen while its decision is read.
+              Deliberately no rail, no dots, no zigzag — that shape is the most
+              template-coded component in the genre. */}
+          <span className="text-sm font-medium tabular-nums text-emerald-700 sm:sticky sm:top-24">
+            {t.year}
+          </span>
           <div>
             <h3 className="font-semibold tracking-tight text-slate-900">{t.title}</h3>
             <div className="mt-3 grid gap-4 sm:grid-cols-3">
@@ -355,6 +385,7 @@ function Recognition() {
 export function Site({ layers }: { layers: SceneLayers }) {
   return (
     <div id="top" className="bg-[#F7FAF7] text-slate-800">
+      <Nav />
       <Hero layers={layers} />
 
       <main className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -392,7 +423,7 @@ export function Site({ layers }: { layers: SceneLayers }) {
           <Recognition />
         </Section>
 
-        <Section id="contact" eyebrow="Experience" title="Where I've worked.">
+        <Section id="experience" eyebrow="Experience" title="Where I've worked.">
           <div className="grid gap-4 sm:grid-cols-2">
             {experiences.map((e) => (
               <div key={e.company} className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -400,10 +431,13 @@ export function Site({ layers }: { layers: SceneLayers }) {
                 <p className="mt-1 text-sm text-slate-500">
                   {e.role} · {e.period}
                 </p>
-                <p className="mt-4 text-sm leading-relaxed text-slate-600">{e.summary}</p>
+                <p className="mt-4 text-[0.95rem] leading-relaxed text-slate-600">{e.summary}</p>
                 <ul className="mt-4 space-y-2 border-t border-slate-100 pt-4">
                   {e.impact.slice(0, 3).map((line) => (
-                    <li key={line} className="flex gap-2.5 text-sm leading-relaxed text-slate-600">
+                    <li
+                      key={line}
+                      className="flex gap-2.5 text-[0.95rem] leading-relaxed text-slate-600"
+                    >
                       <span
                         aria-hidden
                         className="mt-2 h-1 w-1 shrink-0 rounded-full bg-emerald-500"
@@ -415,12 +449,31 @@ export function Site({ layers }: { layers: SceneLayers }) {
               </div>
             ))}
           </div>
+        </Section>
 
-          <div className="mt-10 rounded-2xl bg-slate-900 p-8 sm:p-10">
-            <p className="max-w-xl text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+        <Section id="contact" eyebrow="Contact" title="Let's build something.">
+          <div className="rounded-2xl bg-slate-900 p-8 sm:p-10">
+            <p className="max-w-xl text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
               This is a snapshot. The real product is what we could build together.
             </p>
-            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3">
+            <p className="mt-4 max-w-lg text-[0.95rem] leading-relaxed text-slate-400">
+              {profile.availability}. Based in {profile.location}.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${profile.email}`}
+                className="rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-900 transition-transform hover:-translate-y-0.5"
+              >
+                Email me
+              </a>
+              <a
+                href={profile.resumeUrl}
+                className="rounded-full border border-slate-700 px-6 py-3 text-sm font-medium text-slate-200 transition-colors hover:border-slate-500 hover:text-white"
+              >
+                Résumé
+              </a>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-slate-800 pt-6">
               {profile.socials.map((s) => (
                 <a
                   key={s.label}
@@ -433,6 +486,7 @@ export function Site({ layers }: { layers: SceneLayers }) {
             </div>
           </div>
         </Section>
+
       </main>
 
       <footer className="mx-auto max-w-6xl px-5 pb-12 text-sm text-slate-400 sm:px-8">

@@ -12,6 +12,12 @@
  *   grass   CYCLES — four frames of wind in the foreground turf
  *   me      CYCLES — the figure on the lawn, typing
  *   bough   CYCLES — the overhanging branch, nearest the viewer
+ *
+ * The layers are additionally grouped into four depth planes that drift at
+ * different rates as the hero scrolls away. Parallax is applied to the
+ * GROUP wrappers, never to the images: the images already carry their own
+ * flipbook animations, and an element can only have one animation-timeline
+ * per animation slot without the shorthand becoming unreadable.
  */
 
 import type { SceneLayers } from "@/lib/png";
@@ -22,11 +28,18 @@ const px = { imageRendering: "pixelated" as const };
 export function Landscape({ layers }: { layers: SceneLayers }) {
   return (
     <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden bg-[#5197D2]">
-      <img src={layers.sky} alt="" className={L} style={px} />
+      {/* far — sky and clouds barely move */}
+      <div className={`${L} px-depth-far`}>
+        <img src={layers.sky} alt="" className={L} style={px} />
+        <img src={layers.clouds} alt="" className={`${L} px-drift`} style={px} />
+      </div>
 
-      <img src={layers.clouds} alt="" className={`${L} px-drift`} style={px} />
+      {/* mid — the city, treeline and lawn */}
+      <div className={`${L} px-depth-mid`}>
+        <img src={layers.front} alt="" className={L} style={px} />
+      </div>
 
-      <img src={layers.front} alt="" className={L} style={px} />
+      <div className={`${L} px-depth-near`}>
 
       {layers.grass.map((src, i) => (
         <img
@@ -50,6 +63,10 @@ export function Landscape({ layers }: { layers: SceneLayers }) {
         />
       ))}
 
+      </div>
+
+      {/* foreground — the bough overhead moves most */}
+      <div className={`${L} px-depth-fore`}>
       {layers.bough.map((src, i) => (
         <img
           key={`b${i}`}
@@ -59,6 +76,7 @@ export function Landscape({ layers }: { layers: SceneLayers }) {
           style={{ ...px, animationDelay: `${(-i * 0.7).toFixed(2)}s` }}
         />
       ))}
+      </div>
     </div>
   );
 }
