@@ -222,104 +222,14 @@
   }
 }
 
-/* ------------------------------------------------------------------ */
-/*  Personal OS — boot sequence                                        */
-/*  ------------------------------------------------------------------ */
-/*  CSS-driven so the entry gate exists in the server HTML and reveals  */
-/*  itself even if JS never runs (PRD R1 edge / R13). Base state is     */
-/*  VISIBLE; the animation only delays its arrival.                    */
-/* ------------------------------------------------------------------ */
-@layer utilities {
-  @keyframes os-boot-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
 
-  .os-boot {
-    opacity: 1;
-    animation: os-boot-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
-  }
-
-  /* Reduced motion and no-animation contexts land on the final state. */
-  @media (prefers-reduced-motion: reduce) {
-    .os-boot {
-      animation: none;
-      opacity: 1;
-      transform: none;
-    }
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/*  PIXEL WORLD — Central Park                                         */
-/*  ------------------------------------------------------------------ */
-/*  A bright 2D world, not a document. Panels are game dialogue boxes:  */
-/*  hard edges, chunky borders, a dropped shadow with no blur — blur is */
-/*  what makes pixel UI look cheap.                                     */
-/* ------------------------------------------------------------------ */
-@layer utilities {
-  /* Parchment dialogue box with a double border and a hard shadow. */
-  .world-panel {
-    background: #f7ecd2;
-    border: 3px solid #8a5628;
-    box-shadow:
-      0 0 0 3px #f7ecd2,
-      0 0 0 6px #5a3a1c,
-      6px 6px 0 6px rgba(43, 58, 34, 0.35);
-    image-rendering: pixelated;
-  }
-
-  /* Signposts bob so the eye finds them without an arrow telling it to. */
-  @keyframes world-bob {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-1.5px);
-    }
-  }
-  .world-bob {
-    animation: world-bob 1.8s steps(3, end) infinite;
-    transform-box: fill-box;
-  }
-
-  @keyframes world-pop {
-    from {
-      transform: scale(0.96) translateY(6px);
-      opacity: 0;
-    }
-    to {
-      transform: none;
-      opacity: 1;
-    }
-  }
-  .world-pop {
-    animation: world-pop 0.16s steps(4, end) both;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .world-bob,
-    .world-pop {
-      animation: none;
-      transform: none;
-      opacity: 1;
-    }
-  }
-}
 
 /* Hero entrance — CSS so it never depends on a client effect. */
 @layer utilities {
   @keyframes site-rise {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(6px);
     }
     to {
       opacity: 1;
@@ -337,10 +247,10 @@
     }
   }
   .site-rise {
-    animation: site-rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    animation: site-rise 0.55s var(--ease) both;
   }
   .site-slide {
-    animation: site-slide 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    animation: site-slide 0.55s var(--ease) both;
   }
   @media (prefers-reduced-motion: reduce) {
     .site-rise,
@@ -435,6 +345,17 @@
 /*  than trying to opt out afterwards.                                   */
 /* ------------------------------------------------------------------ */
 @layer utilities {
+  :root {
+    /* One curve, used everywhere. Award-winning sites converge on a single
+       easing (Ross Mason ships easeOutCirc 205 times); that discipline is
+       most of why they read as coherent rather than assembled. */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Linear's asymmetry: hover states arrive instantly and leave slowly.
+       The single most transferable detail in their design system. */
+    --hover-in: 0s;
+    --hover-out: 0.16s;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -462,7 +383,7 @@
     background: rgb(4 120 87); /* emerald-700 */
     scale: 0 1;
     transform-origin: center;
-    transition: scale 0.24s cubic-bezier(0.2, 0.7, 0.3, 1);
+    transition: scale 0.24s var(--ease);
   }
 
   /* Firefox has NOT shipped scroll-driven animations (flag-gated as of 153),
@@ -550,14 +471,19 @@
 
       /* Section arrival — once per section header, never per card. Eight
          staggered cards is the template cadence this is trying to avoid. */
+      /* Deliberately NOT a fade-up. Scroll-triggered upward travel is both
+         a documented cliché (since ~2014) and a real accessibility problem —
+         people report closing tabs from motion sickness caused by exactly
+         this. Settling down from a slight over-scale reads as coming into
+         focus, with no translation to trigger anyone. */
       @keyframes section-in {
         from {
           opacity: 0;
-          transform: translateY(14px);
+          scale: 1.012;
         }
         to {
           opacity: 1;
-          transform: none;
+          scale: 1;
         }
       }
       .reveal {
@@ -630,14 +556,18 @@
   /* Reading focus: hovering or focusing one case card recedes the rest.
      Pointer-only, so it never fires on touch where there is no hover. */
   @media (hover: hover) {
+    /* Dim-the-siblings: reading focus by subtraction rather than by
+       highlight. Leaving is slower than arriving, so the grid settles back
+       rather than snapping. */
     .workgrid article {
       transition:
-        opacity 0.18s ease,
-        box-shadow 0.18s ease;
+        opacity var(--hover-out) var(--ease),
+        box-shadow var(--hover-out) var(--ease);
     }
     .workgrid:has(article:hover) article:not(:hover),
     .workgrid:has(article:focus-within) article:not(:focus-within) {
       opacity: 0.5;
+      transition-duration: var(--hover-in);
     }
   }
 
@@ -686,5 +616,55 @@
     box-shadow: none !important;
     color: #111 !important;
     background: #fff !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Micro-interactions                                                 */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  /* Every pressable acknowledges the press. 160ms, transform only. */
+  @media (hover: hover) and (pointer: fine) {
+    .pressable {
+      transition: transform 0.16s var(--ease);
+    }
+    .pressable:active {
+      transform: scale(0.97);
+    }
+  }
+
+  /* The chevron becomes an arrow: the stem fades in as the tip slides.
+     Entirely CSS, driven by custom-property inheritance from the link. */
+  .arrow {
+    --arrow-tip: none;
+    --arrow-line: 0;
+    stroke-width: 1.75;
+    fill: none;
+    stroke: currentColor;
+    margin-left: 0.4em;
+  }
+  .arrow .arrow-line {
+    opacity: var(--arrow-line);
+    transition: opacity 0.15s var(--ease);
+  }
+  .arrow .arrow-tip {
+    transform: var(--arrow-tip);
+    transition: transform 0.15s var(--ease);
+  }
+  a:hover .arrow,
+  a:focus-visible .arrow {
+    --arrow-line: 1;
+    --arrow-tip: translateX(2.5px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pressable,
+    .arrow .arrow-line,
+    .arrow .arrow-tip {
+      transition: none;
+    }
+    .pressable:active {
+      transform: none;
+    }
   }
 }

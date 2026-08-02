@@ -17,6 +17,21 @@ import { caseFiles, timeline } from "@/data/work";
 import { achievements, experiences, profile, skillCategories, stats } from "@/data/portfolio";
 import { Landscape } from "./Landscape";
 
+/** Chevron that becomes an arrow on hover. Pure CSS — the link sets the
+ *  custom properties, the SVG reads them. Costs nothing and reads as craft. */
+function Arrow() {
+  return (
+    <svg className="arrow inline-block" width="12" height="12" viewBox="0 0 10 10" aria-hidden>
+      <g className="arrow-line">
+        <path d="M0 5 h7" />
+      </g>
+      <g className="arrow-tip">
+        <path d="M1 1 l4 4 l-4 4" />
+      </g>
+    </svg>
+  );
+}
+
 const NAV = [
   { label: "Work", href: "#work" },
   { label: "Journey", href: "#journey" },
@@ -69,7 +84,7 @@ function Nav() {
 
         <a
           href={profile.resumeUrl}
-          className="hidden shrink-0 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5 sm:block"
+          className="pressable hidden shrink-0 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm sm:block"
         >
           Résumé
         </a>
@@ -99,15 +114,17 @@ function Hero({ layers }: { layers: SceneLayers }) {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href="#work"
-              className="rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white shadow-lg transition-transform hover:-translate-y-0.5"
+              className="pressable inline-flex items-center rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white shadow-lg"
             >
               See my work
+              <Arrow />
             </a>
             <a
               href="#contact"
-              className="rounded-full bg-white/90 px-6 py-3 text-sm font-medium text-slate-900 shadow-lg backdrop-blur transition-transform hover:-translate-y-0.5"
+              className="pressable inline-flex items-center rounded-full bg-white/90 px-6 py-3 text-sm font-medium text-slate-900 shadow-lg backdrop-blur"
             >
               Get in touch
+              <Arrow />
             </a>
           </div>
         </div>
@@ -125,7 +142,7 @@ function Hero({ layers }: { layers: SceneLayers }) {
                     c.tone === "live" ? "animate-pulse bg-emerald-300" : "bg-white/70"
                   }`}
                 />
-                <span className="text-[0.7rem] font-medium uppercase tracking-wider text-white/70">
+                <span className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-white/70">
                   {c.label}
                 </span>
               </span>
@@ -153,10 +170,10 @@ function Section({
 }) {
   return (
     <section id={id} className="reveal scroll-mt-16 border-t border-slate-200/80 py-20 sm:py-24">
-      <p className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-emerald-700">
+      <p className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-emerald-700">
         {eyebrow}
       </p>
-      <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+      <h2 className="mt-3 max-w-2xl text-balance text-[2rem] font-semibold leading-[1.1] tracking-tight text-slate-900 sm:text-[2.75rem]">
         {title}
       </h2>
       {lede && (
@@ -176,7 +193,7 @@ function Stats() {
     <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-4">
       {stats.map((s) => (
         <li key={s.label} className="bg-white px-5 py-6">
-          <p className="text-3xl font-semibold tracking-tight text-slate-900">
+          <p className="text-[2.5rem] font-semibold leading-none tracking-tight text-slate-900">
             {s.decimals ? s.value.toFixed(s.decimals) : s.value}
             <span className="text-emerald-600">{s.suffix ?? ""}</span>
           </p>
@@ -198,7 +215,7 @@ function Work() {
           <div className="flex items-start justify-between gap-4">
             <h3 className="text-lg font-semibold tracking-tight text-slate-900">{c.title}</h3>
             <span
-              className={`shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium uppercase tracking-wider ${
+              className={`shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.14em] ${
                 c.classification === "NDA"
                   ? "bg-amber-100 text-amber-800"
                   : "bg-emerald-100 text-emerald-800"
@@ -215,13 +232,13 @@ function Work() {
 
           <dl className="mt-5 space-y-3 border-t border-slate-100 pt-4">
             <div>
-              <dt className="text-[0.7rem] font-medium uppercase tracking-wider text-slate-400">
+              <dt className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-slate-400">
                 What I built
               </dt>
               <dd className="mt-1 text-sm leading-relaxed text-slate-600">{c.architecture}</dd>
             </div>
             <div>
-              <dt className="text-[0.7rem] font-medium uppercase tracking-wider text-slate-400">
+              <dt className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-slate-400">
                 Impact
               </dt>
               <dd className="mt-1 text-sm font-medium leading-relaxed text-slate-900">
@@ -268,7 +285,7 @@ function Journey() {
                 ] as const
               ).map(([k, v]) => (
                 <div key={k}>
-                  <p className="text-[0.7rem] font-medium uppercase tracking-wider text-slate-400">
+                  <p className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-slate-400">
                     {k}
                   </p>
                   <p
@@ -344,7 +361,7 @@ function Recognition() {
             className="rounded-2xl border border-amber-200 bg-gradient-to-b from-amber-50 to-white p-6"
           >
             <div className="flex items-center gap-2">
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.65rem] font-medium uppercase tracking-wider text-amber-900">
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-amber-900">
                 {a.type}
               </span>
               <span className="text-xs tabular-nums text-slate-500">{a.year}</span>
@@ -362,7 +379,7 @@ function Recognition() {
         {rest.map((a) => (
           <li key={a.title} className="flex flex-col gap-1 bg-white px-5 py-4">
             <span
-              className={`w-fit rounded-full px-2 py-0.5 text-[0.6rem] font-medium uppercase tracking-wider ${
+              className={`w-fit rounded-full px-2 py-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.14em] ${
                 TYPE_TONE[a.type] ?? "bg-slate-100 text-slate-700"
               }`}
             >
@@ -462,15 +479,17 @@ export function Site({ layers }: { layers: SceneLayers }) {
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${profile.email}`}
-                className="rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-900 transition-transform hover:-translate-y-0.5"
+                className="pressable inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-900"
               >
                 Email me
+                <Arrow />
               </a>
               <a
                 href={profile.resumeUrl}
-                className="rounded-full border border-slate-700 px-6 py-3 text-sm font-medium text-slate-200 transition-colors hover:border-slate-500 hover:text-white"
+                className="pressable inline-flex items-center rounded-full border border-slate-700 px-6 py-3 text-sm font-medium text-slate-200 transition-colors hover:border-slate-500 hover:text-white"
               >
                 Résumé
+                <Arrow />
               </a>
             </div>
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-slate-800 pt-6">
