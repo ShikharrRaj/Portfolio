@@ -190,7 +190,7 @@ published content, with the boundary made explicit.
 A visitor moves to any part of the system directly, without navigating a hierarchy.
 
 - **Given** a visitor anywhere in the OS, **when** they invoke search, **then** they can reach
-  surfaces, case files, decisions, technologies, external profiles, and résumé from one input.
+  surfaces, case files, decisions, technologies, external profiles, and Resume from one input.
 - **Given** a query with no match, **when** results resolve, **then** an actionable empty state
   offers the closest available topics.
 - **Error:** if the index fails to build, the entry point is hidden rather than shown broken.

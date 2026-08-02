@@ -14,8 +14,16 @@
 
 import type { SceneLayers } from "@/lib/png";
 import { caseFiles, timeline } from "@/data/work";
-import { achievements, experiences, profile, skillCategories, stats } from "@/data/portfolio";
+import {
+  achievements,
+  experiences,
+  profile,
+  sceneLines,
+  skillCategories,
+  stats,
+} from "@/data/portfolio";
 import { Landscape } from "./Landscape";
+import { SceneStage } from "./SceneStage";
 
 /** Chevron that becomes an arrow on hover. Pure CSS — the link sets the
  *  custom properties, the SVG reads them. Costs nothing and reads as craft. */
@@ -86,7 +94,7 @@ function Nav() {
           href={profile.resumeUrl}
           className="pressable hidden shrink-0 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm sm:block"
         >
-          Résumé
+          Resume
         </a>
       </div>
     </div>
@@ -96,7 +104,12 @@ function Nav() {
 function Hero({ layers }: { layers: SceneLayers }) {
   return (
     <header className="relative isolate min-h-[100svh] overflow-clip bg-[#5197D2]">
-      <Landscape layers={layers} />
+      {/* The stage is the only client code in the hero. Landscape is passed
+          as children so the thirty-odd <img> layers stay server-rendered and
+          never enter the client bundle. */}
+      <SceneStage lines={sceneLines}>
+        <Landscape layers={layers} />
+      </SceneStage>
 
 
       <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-5 pb-24 pt-16 sm:px-8 sm:pt-24 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
@@ -276,11 +289,10 @@ function Journey() {
           </span>
           <div>
             <h3 className="font-semibold tracking-tight text-slate-900">{t.title}</h3>
-            <div className="mt-3 grid gap-4 sm:grid-cols-3">
+            <div className="mt-3 grid gap-4 sm:grid-cols-2">
               {(
                 [
                   ["Decision", t.decision],
-                  ["Trade-off", t.tradeoff],
                   ["Outcome", t.outcome],
                 ] as const
               ).map(([k, v]) => (
@@ -288,13 +300,7 @@ function Journey() {
                   <p className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-slate-400">
                     {k}
                   </p>
-                  <p
-                    className={`mt-1 text-sm leading-relaxed ${
-                      k === "Trade-off" ? "text-amber-800" : "text-slate-600"
-                    }`}
-                  >
-                    {v}
-                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">{v}</p>
                 </div>
               ))}
             </div>
@@ -422,7 +428,7 @@ export function Site({ layers }: { layers: SceneLayers }) {
           id="journey"
           eyebrow="Journey"
           title="How I got here."
-          lede="Every step as a decision, the trade-off I accepted, and what it produced."
+          lede="Every step as a decision, and what it produced."
         >
           <Journey />
         </Section>
@@ -469,20 +475,21 @@ export function Site({ layers }: { layers: SceneLayers }) {
         </Section>
 
         <Section id="contact" eyebrow="Contact" title="Let's build something.">
-          {/* Deep forest, not slate. This is the page's one dark surface, and
-              pulling its colour from the treeline in the hero ties the two ends
-              of the page together. Neutral grey read as a default — because it
-              was one. */}
-          <div className="relative overflow-hidden rounded-2xl bg-[#12291F] p-8 sm:p-10">
+          {/* Forest, not slate. This is the page's one dark surface, and pulling
+              its colour from the treeline in the hero ties the two ends of the
+              page together. Neutral grey read as a default — because it was one.
+              Lifted several steps from the near-black it started at, so it now
+              reads as green rather than as black with a tint. */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#1C4433] p-8 sm:p-10">
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_12%_0%,#22503A_0%,#153123_45%,#0B1C15_100%)]"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_12%_0%,#2A6B4B_0%,#1E5138_45%,#123626_100%)]"
             />
             <div className="relative">
-              <p className="max-w-xl text-balance text-2xl font-semibold leading-tight tracking-tight text-[#F3F8F4] sm:text-3xl">
+              <p className="max-w-xl text-balance text-2xl font-semibold leading-tight tracking-tight text-[#F1FAF4] sm:text-3xl">
                 This is a snapshot. The real product is what we could build together.
               </p>
-              <p className="mt-4 max-w-lg text-[0.95rem] leading-relaxed text-[#9EBCAA]">
+              <p className="mt-4 max-w-lg text-[0.95rem] leading-relaxed text-[#C8E3D3]">
                 {profile.availability}. Based in {profile.location}.
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -495,20 +502,20 @@ export function Site({ layers }: { layers: SceneLayers }) {
                 </a>
                 <a
                   href={profile.resumeUrl}
-                  className="pressable inline-flex items-center rounded-full border border-[#3C6A53] px-6 py-3 text-sm font-medium text-[#CFE4D7] transition-colors hover:border-[#5F9376] hover:text-white"
+                  className="pressable inline-flex items-center rounded-full border border-[#56876E] px-6 py-3 text-sm font-medium text-[#DCEFE4] transition-colors hover:border-[#7FB79A] hover:text-white"
                 >
-                  Résumé
+                  Resume
                   <Arrow />
                 </a>
               </div>
-              <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-[#2B4C39] pt-6">
+              <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-[#3A6550] pt-6">
                 {profile.socials.map((s) => (
                   <a
                     key={s.label}
                     href={s.href}
-                    className="text-sm text-[#BAD4C4] underline-offset-4 transition-colors hover:text-[#7BD8A4] hover:underline"
+                    className="text-sm text-[#C3DCCE] underline-offset-4 transition-colors hover:text-[#7BD8A4] hover:underline"
                   >
-                    <span className="text-[#71937F]">{s.label}</span> {s.handle}
+                    <span className="text-[#A5C6B2]">{s.label}</span> {s.handle}
                   </a>
                 ))}
               </div>

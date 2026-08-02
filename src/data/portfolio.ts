@@ -36,6 +36,21 @@ export const profile = {
   ],
 } as const;
 
+/**
+ * What the figure on the lawn says when you tap him.
+ *
+ * One line per tap, in order, then it loops. Keep them short — the bubble
+ * is anchored to a 45-pixel-wide sprite and a long line covers his face.
+ * Written in his voice, present tense, as if you had walked up and asked.
+ */
+export const sceneLines: readonly string[] = [
+  "Hey. Shipping a corporate banking platform this quarter.",
+  "Mostly architecture and delivery lately. Some of it from this lawn.",
+  "Built a Claude × Figma pipeline — team moved 25–30% faster.",
+  "Three and a half years: banking, wealth, insurance.",
+  "Scroll on. There's more of this below.",
+] as const;
+
 export type Stat = {
   label: string;
   value: number;

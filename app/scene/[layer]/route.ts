@@ -15,7 +15,17 @@ import {
   photoGrass,
   photoSkyWithSun,
 } from "@/lib/photoScene";
-import { PERSON_FRAMES, paintPerson } from "@/lib/person";
+import { DOG_FRAMES, DOG_SIT_FRAMES, paintDog, paintDogSit } from "@/lib/dog";
+import {
+  BODY_FRAMES,
+  HEAD_DIRS,
+  PACK_FRAMES,
+  WAVE_FRAMES,
+  paintBody,
+  paintHead,
+  paintPack,
+  paintWave,
+} from "@/lib/person";
 import { type Buf } from "@/lib/pixelScene";
 import { encodePng } from "@/lib/png";
 
@@ -31,8 +41,22 @@ const PAINTERS: Record<string, () => Buf> = {
   ...Object.fromEntries(
     Array.from({ length: BOUGH_FRAMES }, (_, f) => [`bough-${f}`, () => photoBough(f)]),
   ),
+  // The figure: body and head compose, the two other poses are whole.
   ...Object.fromEntries(
-    Array.from({ length: PERSON_FRAMES }, (_, f) => [`me-${f}`, () => paintPerson(f)]),
+    Array.from({ length: BODY_FRAMES }, (_, f) => [`body-${f}`, () => paintBody(f)]),
+  ),
+  ...Object.fromEntries(HEAD_DIRS.map((d) => [`head-${d}`, () => paintHead(d)])),
+  ...Object.fromEntries(
+    Array.from({ length: PACK_FRAMES }, (_, f) => [`pack-${f}`, () => paintPack(f)]),
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: WAVE_FRAMES }, (_, f) => [`wave-${f}`, () => paintWave(f)]),
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: DOG_FRAMES }, (_, f) => [`dog-${f}`, () => paintDog(f)]),
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: DOG_SIT_FRAMES }, (_, f) => [`dogsit-${f}`, () => paintDogSit(f)]),
   ),
 };
 

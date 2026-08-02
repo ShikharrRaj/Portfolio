@@ -10,7 +10,8 @@
  */
 
 import { deflateSync } from "node:zlib";
-import { PERSON_FRAMES } from "./person";
+import { DOG_FRAMES, DOG_SIT_FRAMES } from "./dog";
+import { BODY_FRAMES, HEAD_DIRS, PACK_FRAMES, WAVE_FRAMES } from "./person";
 import { BOUGH_FRAMES, GRASS_FRAMES } from "./photoScene";
 import { type Buf } from "./pixelScene";
 
@@ -65,12 +66,26 @@ export function encodePng(b: Buf): Buffer {
   ]);
 }
 
+/**
+ * The figure is four separate sets rather than one.
+ *
+ * `body` and `head` compose — the body types, the head turns, and they are
+ * stacked. That is what keeps three head directions from multiplying the
+ * four typing frames into twelve sprites. `pack` and `wave` change the
+ * silhouette too much to compose, so those are whole figures.
+ */
 export type SceneLayers = {
   sky: string;
   clouds: string;
   front: string;
   grass: string[];
-  me: string[];
+  body: string[];
+  /** Indexed by HEAD_DIRS: shaded side, level, lit side. */
+  head: string[];
+  pack: string[];
+  wave: string[];
+  dog: string[];
+  dogSit: string[];
   bough: string[];
 };
 
@@ -80,6 +95,11 @@ export const SCENE_LAYERS: SceneLayers = {
   clouds: "/scene/clouds.png",
   front: "/scene/front.png",
   grass: Array.from({ length: GRASS_FRAMES }, (_, f) => `/scene/grass-${f}.png`),
-  me: Array.from({ length: PERSON_FRAMES }, (_, f) => `/scene/me-${f}.png`),
+  body: Array.from({ length: BODY_FRAMES }, (_, f) => `/scene/body-${f}.png`),
+  head: HEAD_DIRS.map((d) => `/scene/head-${d}.png`),
+  pack: Array.from({ length: PACK_FRAMES }, (_, f) => `/scene/pack-${f}.png`),
+  wave: Array.from({ length: WAVE_FRAMES }, (_, f) => `/scene/wave-${f}.png`),
+  dog: Array.from({ length: DOG_FRAMES }, (_, f) => `/scene/dog-${f}.png`),
+  dogSit: Array.from({ length: DOG_SIT_FRAMES }, (_, f) => `/scene/dogsit-${f}.png`),
   bough: Array.from({ length: BOUGH_FRAMES }, (_, f) => `/scene/bough-${f}.png`),
 };
