@@ -50,7 +50,7 @@ function Hero({ layers }: { layers: SceneLayers }) {
             <a
               key={n.href}
               href={n.href}
-              className="rounded-full px-4 py-1.5 text-sm text-slate-700 transition-colors hover:bg-white hover:text-slate-900"
+              className="navlink rounded-full px-4 py-1.5 text-sm text-slate-700 transition-colors hover:bg-white hover:text-slate-900"
             >
               {n.label}
             </a>
@@ -131,7 +131,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-8 border-t border-slate-200/80 py-20 sm:py-24">
+    <section id={id} className="reveal scroll-mt-16 border-t border-slate-200/80 py-20 sm:py-24">
       <p className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-emerald-700">
         {eyebrow}
       </p>

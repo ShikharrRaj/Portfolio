@@ -153,15 +153,15 @@ export const caseFiles: CaseFile[] = [
     constraints:
       "Enterprise insurance client, agency delivery timelines, and a distribution audience who live in the tool all day — so workflow speed mattered more than visual novelty.",
     architecture:
-      "Angular application built around the daily workflow of a distribution team: a single unified view of the book, with the tracking actions that follow it reachable without leaving that view.",
+      "React application built around the daily workflow of a distribution team: a single unified view of the book, with the tracking actions that follow it reachable without leaving that view.",
     decision:
       "Optimised for the repeat user, not the first-time visitor. Distribution teams open this every morning, so density and speed beat onboarding polish.",
     impact: "Improved workflow efficiency for Bajaj's distribution teams.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["React", "TypeScript", "Tailwind CSS"],
   },
   {
-    id: "bajaj-insurcraft",
-    title: "Bajaj Insurcraft",
+    id: "bajaj-insurecraft",
+    title: "Bajaj Insurecraft",
     client: "Bajaj",
     year: "2025",
     classification: "NDA",
@@ -175,7 +175,7 @@ export const caseFiles: CaseFile[] = [
     decision:
       "Cut the interface back rather than add to it. Every element that did not answer 'what is the state of my policy' was removed.",
     impact: "Reduced support load by making the routine question self-serve.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["HTML", "CSS", "JavaScript"],
   },
   {
     id: "bajaj-ekyc",
@@ -193,7 +193,7 @@ export const caseFiles: CaseFile[] = [
     decision:
       "Treated drop-off as the primary metric rather than completion time. A flow that is fast but abandons people mid-way is worse than one that is patient and finishes.",
     impact: "Smoother customer onboarding with fewer drop-offs.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["HTML", "CSS", "JavaScript"],
   },
   {
     id: "dark-software-factory",

@@ -421,3 +421,73 @@
     }
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Navigation and section reveal                                      */
+/*  ------------------------------------------------------------------ */
+/*  Anchor clicks glide rather than teleport, and each section arrives  */
+/*  as it enters the viewport. Both are CSS-only: scroll-driven         */
+/*  animation needs no observer, and where it is unsupported the        */
+/*  content simply renders in its final state.                          */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @keyframes section-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Progressive enhancement: only browsers that understand scroll-driven
+     animation get the reveal, so nobody else is left with hidden content. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: section-in linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+  }
+
+  /* The active nav pill is derived from the URL fragment — no JS. */
+  .navlink {
+    position: relative;
+  }
+  .navlink::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0.28rem;
+    height: 1.5px;
+    width: 0;
+    translate: -50% 0;
+    border-radius: 2px;
+    background: currentColor;
+    transition: width 0.28s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .navlink:hover::after,
+  .navlink:focus-visible::after {
+    width: calc(100% - 1.6rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .navlink::after {
+      transition: none;
+    }
+  }
+}

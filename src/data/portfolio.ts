@@ -137,7 +137,7 @@ export const experiences: Experience[] = [
       },
       {
         name: "Bajaj",
-        project: "Bajaj Insurcraft",
+        project: "Bajaj Insurecraft",
         description: "Web app for insurance tracking for customers.",
       },
       {
@@ -224,12 +224,12 @@ export const projects: Project[] = [
     solution:
       "A web application streamlining insurance tracking workflows for agents and Relationship Managers.",
     impact: "Improved workflow efficiency for distribution teams.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["React", "TypeScript", "Tailwind CSS"],
     accent: ["#276749", "#38a169"],
     confidential: true,
   },
   {
-    title: "Bajaj Insurcraft",
+    title: "Bajaj Insurecraft",
     category: "Fintech",
     client: "Bajaj",
     year: "2025",
@@ -238,7 +238,7 @@ export const projects: Project[] = [
     solution:
       "A clean, customer-facing web app for self-serve insurance tracking.",
     impact: "Reduced support load via self-service visibility.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["HTML", "CSS", "JavaScript"],
     accent: ["#38a169", "#68d391"],
     confidential: true,
   },
@@ -252,7 +252,7 @@ export const projects: Project[] = [
     solution:
       "A guided eKYC web experience optimizing the customer onboarding process.",
     impact: "Smoother onboarding with fewer drop-offs.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["HTML", "CSS", "JavaScript"],
     accent: ["#2f855a", "#38a169"],
     confidential: true,
   },
@@ -467,10 +467,17 @@ export type Achievement = {
 export const achievements: Achievement[] = [
   {
     type: "Award",
-    title: "Virtual Prompt Wars — Rank #80 of 45,641",
+    title: "Prompt Wars (in person) — 98.93/100",
     org: "Hack2skill × Google for Developers",
     year: "2026",
-    note: "98.93/100 AI evaluation score",
+    note: "On-site round",
+  },
+  {
+    type: "Award",
+    title: "Prompt Wars (virtual) — Rank #80 of 45,641",
+    org: "Hack2skill × Google for Developers",
+    year: "2026",
+    note: "96.9/100 AI evaluation score",
   },
   {
     type: "Award",
@@ -744,7 +751,7 @@ export const architecture: ArchCase[] = [
     scale: "Multi-client · shared design system · −20–25% turnaround",
     nodes: [
       { id: "ds", label: "Design System", detail: "Shared, type-safe components for pixel-perfect UI." },
-      { id: "apps", label: "Angular Apps", detail: "RTA, BGIL, Insurcraft & EKYC built on one foundation." },
+      { id: "apps", label: "Client Apps", detail: "RTA (Angular), BGIL (React), Insurecraft & EKYC (HTML/CSS)." },
       { id: "api", label: "Service Layer", detail: "Domain APIs for portfolios, policies and KYC." },
       { id: "deploy", label: "Frontend Deploy", detail: "Owned release pipeline from the frontend." },
     ],
