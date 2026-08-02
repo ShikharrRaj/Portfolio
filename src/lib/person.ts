@@ -30,32 +30,35 @@ const hex = (h: string): RGB => [
   parseInt(h.slice(5, 7), 16),
 ];
 
-/* Sampled from public/my.jpeg, then white-balanced out of the lamp light. */
+/* Sampled from my1/my2/my3.jpeg and white-balanced to daylight. The
+ * reference shots are a warm cafe and two sunsets, so the raw samples come
+ * back orange (skin read #a75439, shirt #b7bee2); these are those hues
+ * corrected back to midday. */
 const C = {
-  hairDeep: hex("#080605"),
-  hairDark: hex("#130D0B"),
-  hair: hex("#241914"),
-  hairLit: hex("#3E2C22"),
+  hairDeep: hex("#0A0706"),
+  hairDark: hex("#171010"),
+  hair: hex("#241A16"),
+  hairLit: hex("#3F2D22"),
 
   skinDeep: hex("#7E4A2C"),
-  skinShade: hex("#A8663C"),
-  skin: hex("#D18E61"),
-  skinLit: hex("#EFBA8D"),
+  skinShade: hex("#AB6C43"),
+  skin: hex("#D9976B"),
+  skinLit: hex("#F0BC92"),
 
-  beard: hex("#3E2619"),
-  beardLit: hex("#5A3B27"),
+  beard: hex("#33231A"),
+  beardLit: hex("#4E3626"),
+  tooth: hex("#F6EFE4"),
 
-  glass: hex("#0A0808"),
-  glassLit: hex("#3A3634"),
+  /* The striped shirt — the single most identifiable thing he wears. */
+  shirtLit: hex("#F4F7FC"),
+  shirt: hex("#E4EBF5"),
+  shirtStripe: hex("#A9C0DC"),
+  shirtShade: hex("#C4D1E2"),
+  shirtDeep: hex("#9FB0C6"),
 
-  teeDeep: hex("#A79E92"),
-  teeShade: hex("#CAC2B6"),
-  tee: hex("#EAE5DC"),
-  teeLit: hex("#FCFAF5"),
-
-  slingDeep: hex("#0E0B0A"),
-  slingDark: hex("#191413"),
-  sling: hex("#2E2622"),
+  slingDeep: hex("#0C0A09"),
+  slingDark: hex("#161211"),
+  sling: hex("#282120"),
 
   jeansDeep: hex("#26303D"),
   jeans: hex("#38455A"),
@@ -74,7 +77,7 @@ const C = {
   shadow: hex("#37601F"),
 } as const;
 
-function px(b: Buf, x: number, y: number, c: RGB) {
+function put(b: Buf, x: number, y: number, c: RGB) {
   const xi = Math.round(x);
   const yi = Math.round(y);
   if (xi < 0 || yi < 0 || xi >= b.w || yi >= b.h) return;
@@ -86,7 +89,7 @@ function px(b: Buf, x: number, y: number, c: RGB) {
 }
 
 function rect(b: Buf, x: number, y: number, w: number, h: number, c: RGB) {
-  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) px(b, x + i, y + j, c);
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(b, x + i, y + j, c);
 }
 
 /** Where the figure sits in the 384×216 scene — clear of the headline on
@@ -110,7 +113,7 @@ export function paintPerson(frame: number): Buf {
   for (let i = 0; i < 44; i++) {
     for (let j = 0; j < 4; j++) {
       if ((i + j) % 2 === 0) continue;
-      px(b, ox + 1 + i, oy + 61 + j, C.shadow);
+      put(b, ox + 1 + i, oy + 61 + j, C.shadow);
     }
   }
 
@@ -122,43 +125,62 @@ export function paintPerson(frame: number): Buf {
   rect(b, ox + 41, oy + 56, 3, 5, C.jeansDeep);
   rect(b, ox + 13, oy + 59, 20, 2, C.jeansLit); // near shin folded across
 
-  /* ---- torso: oversized white tee --------------------------------------- */
-  rect(b, ox + 6, oy + 26, 34, 30, C.tee);
-  // shoulders slope — the near one sits a pixel lower
-  rect(b, ox + 6, oy + 26, 16, 2, C.teeLit);
-  rect(b, ox + 22, oy + 27, 18, 2, C.teeLit);
-  rect(b, ox + 5, oy + 29, 1, 25, C.teeShade); // turning edges
-  rect(b, ox + 40, oy + 29, 1, 25, C.teeShade);
-  rect(b, ox + 6, oy + 50, 34, 4, C.teeShade); // hem in shadow
-  rect(b, ox + 7, oy + 53, 32, 1, C.teeDeep);
-  // occlusion where the sleeves meet the body
-  rect(b, ox + 7, oy + 31, 2, 13, C.teeDeep);
-  rect(b, ox + 38, oy + 31, 2, 13, C.teeDeep);
-  // a couple of fabric folds, so the tee reads as cloth not card
-  rect(b, ox + 14, oy + 40, 1, 9, C.teeShade);
-  rect(b, ox + 29, oy + 43, 1, 7, C.teeShade);
-  rect(b, ox + 18, oy + 28, 10, 2, C.teeShade); // collar
+  /* ---- torso: the light blue striped shirt ------------------------------ */
+  const TORSO_X = 6;
+  const TORSO_W = 34;
+  const TORSO_Y = oy + 26;
+  const TORSO_H = 30;
 
-  /* ---- crossbody sling --------------------------------------------------- */
-  for (let s = 0; s < 21; s++) {
-    const sx = ox + 15 + Math.round(s * 0.52);
-    px(b, sx, oy + 27 + s, C.slingDark);
-    px(b, sx + 1, oy + 27 + s, C.sling);
-    px(b, sx + 2, oy + 27 + s, C.slingDeep);
+  for (let j = 0; j < TORSO_H; j++) {
+    for (let i = 0; i < TORSO_W; i++) {
+      const x = ox + TORSO_X + i;
+      const y = TORSO_Y + j;
+      // Vertical pinstripes every third column — the shirt's signature, and
+      // stripes are the one garment detail that survives at this pixel size.
+      const striped = i % 3 === 1;
+      let c: RGB = striped ? C.shirtStripe : C.shirt;
+      if (j < 3) c = striped ? C.shirtStripe : C.shirtLit; // light off the shoulders
+      if (j > TORSO_H - 6) c = striped ? C.shirtDeep : C.shirtShade; // hem in shade
+      if (i < 2 || i > TORSO_W - 3) c = striped ? C.shirtDeep : C.shirtShade; // turning edges
+      put(b, x, y, c);
+    }
   }
-  rect(b, ox + 22, oy + 45, 14, 8, C.sling); // pouch
-  rect(b, ox + 22, oy + 45, 14, 2, C.slingDark);
-  rect(b, ox + 22, oy + 52, 14, 1, C.slingDeep);
-  rect(b, ox + 24, oy + 48, 10, 1, C.slingDeep); // zip
-  px(b, ox + 34, oy + 48, C.steelDark); // zip pull
+  // open collar, a shallow V
+  rect(b, ox + 17, oy + 26, 12, 1, C.shirtShade);
+  for (let k = 0; k < 5; k++) {
+    put(b, ox + 20 + k, oy + 27 + k, C.shirtDeep);
+    put(b, ox + 26 - k, oy + 27 + k, C.shirtDeep);
+  }
+  rect(b, ox + 22, oy + 27, 3, 4, C.skinShade); // a little chest in the opening
+  // placket + two buttons
+  rect(b, ox + 22, oy + 32, 1, 20, C.shirtDeep);
+  put(b, ox + 22, oy + 38, C.shirtLit);
+  put(b, ox + 22, oy + 46, C.shirtLit);
 
-  /* ---- arms --------------------------------------------------------------- */
-  rect(b, ox + 2, oy + 29, 5, 14, C.tee); // sleeves
-  rect(b, ox + 39, oy + 30, 5, 14, C.tee);
-  rect(b, ox + 2, oy + 29, 5, 2, C.teeLit);
-  rect(b, ox + 39, oy + 30, 5, 2, C.teeLit);
-  rect(b, ox + 2, oy + 41, 5, 2, C.teeShade); // cuff shadow
-  rect(b, ox + 39, oy + 42, 5, 2, C.teeShade);
+  /* ---- the black crossbody sling ---------------------------------------- */
+  for (let s2 = 0; s2 < 20; s2++) {
+    const sx = ox + 15 + Math.round(s2 * 0.62);
+    put(b, sx, oy + 27 + s2, C.slingDark);
+    put(b, sx + 1, oy + 27 + s2, C.sling);
+    put(b, sx + 2, oy + 27 + s2, C.slingDeep);
+  }
+  rect(b, ox + 21, oy + 45, 15, 8, C.sling); // the pouch, worn low and centre
+  rect(b, ox + 21, oy + 45, 15, 2, C.slingDark);
+  rect(b, ox + 21, oy + 52, 15, 1, C.slingDeep);
+  rect(b, ox + 23, oy + 48, 11, 1, C.slingDeep); // zip
+  put(b, ox + 34, oy + 48, C.steelDark); // zip pull
+
+  /* ---- arms -------------------------------------------------------------- */
+  for (let j = 0; j < 14; j++) {
+    for (let i = 0; i < 5; i++) {
+      const striped = i % 3 === 1;
+      const c: RGB = j < 2 ? (striped ? C.shirtStripe : C.shirtLit) : striped ? C.shirtStripe : C.shirt;
+      put(b, ox + 2 + i, oy + 29 + j, c);
+      put(b, ox + 39 + i, oy + 30 + j, c);
+    }
+  }
+  rect(b, ox + 2, oy + 41, 5, 2, C.shirtShade); // rolled cuffs
+  rect(b, ox + 39, oy + 42, 5, 2, C.shirtShade);
 
   // Forearms angle in toward the keyboard; one sits a pixel lower per beat.
   const lY = oy + 43 + (leftDown ? 1 : 0);
@@ -171,78 +193,89 @@ export function paintPerson(frame: number): Buf {
   rect(b, ox + 40, rY + 6, 4, 1, C.skinShade);
 
   // steel watch, on the wrist that faces us
-  rect(b, ox + 40, rY + 4, 4, 2, C.steel);
+  rect(b, ox + 40, rY + 3, 4, 3, C.steel);
+  rect(b, ox + 41, rY + 4, 2, 1, C.slingDeep); // dark dial
   rect(b, ox + 40, rY + 5, 4, 1, C.steelDark);
 
   // wrists turning in toward the keys
   rect(b, ox + 6, lY + 5, 5, 3, C.skinShade);
   rect(b, ox + 36, rY + 5, 5, 3, C.skinShade);
-  // hands — three visible knuckles each
+  // hands
   rect(b, ox + 10, lY + 6, 6, 3, C.skin);
   rect(b, ox + 10, lY + 6, 6, 1, C.skinLit);
   rect(b, ox + 31, rY + 6, 6, 3, C.skin);
   rect(b, ox + 31, rY + 6, 6, 1, C.skinLit);
   for (const k of [0, 2, 4]) {
-    px(b, ox + 11 + k, lY + 8, C.skinShade);
-    px(b, ox + 32 + k, rY + 8, C.skinShade);
+    put(b, ox + 11 + k, lY + 8, C.skinShade);
+    put(b, ox + 32 + k, rY + 8, C.skinShade);
   }
 
-  /* ---- head ---------------------------------------------------------------- */
-  /* At this size the face is 18px wide. Detail fights legibility here, so
-   * the rule is few clean shapes: one hair mass, one glasses band, one
-   * stubble field, one mouth. An earlier pass hatched the stubble with a
-   * hash and drew a stepped fringe; both read as scribble at 1:1. */
+  /* ---- head --------------------------------------------------------------- */
+  /* Face visible and smiling, per my1/my3 — no sunglasses. The stripes, the
+   * sling and the hair volume carry the likeness; hiding the eyes behind a
+   * black bar made the earlier sprite read as anonymous. */
   const hy = oy + nod;
 
-  // neck, shaded by the jaw above it
-  rect(b, ox + 18, oy + 24 + nod, 10, 4, C.skinShade);
+  rect(b, ox + 18, oy + 24 + nod, 10, 4, C.skinShade); // neck
   rect(b, ox + 18, oy + 24 + nod, 10, 1, C.skinDeep);
 
-  // face
-  rect(b, ox + 14, hy + 6, 18, 20, C.skin);
+  rect(b, ox + 14, hy + 6, 18, 20, C.skin); // face
+  rect(b, ox + 15, hy + 6, 15, 2, C.skinLit); // forehead
   rect(b, ox + 31, hy + 9, 1, 15, C.skinShade); // far cheek turns away
-  rect(b, ox + 13, hy + 10, 1, 12, C.skinShade); // near cheek edge
-  rect(b, ox + 15, hy + 24, 16, 2, C.skinShade); // under-jaw
-  rect(b, ox + 17, hy + 25, 12, 1, C.skinDeep);
+  rect(b, ox + 13, hy + 10, 1, 12, C.skinShade);
+  rect(b, ox + 16, hy + 24, 14, 2, C.skinShade); // under-jaw
 
-  // sunglasses — one clean band, sitting a third of the way down the face
-  rect(b, ox + 13, hy + 11, 20, 3, C.glass);
-  rect(b, ox + 15, hy + 12, 4, 1, C.glassLit); // glints
-  rect(b, ox + 26, hy + 12, 4, 1, C.glassLit);
-  px(b, ox + 12, hy + 12, C.glass); // temple arms
-  px(b, ox + 33, hy + 12, C.glass);
-  rect(b, ox + 15, hy + 10, 16, 1, C.skinShade); // brow shadow above the frame
+  // brows, then eyes — two pixels each is all a 18px face can carry
+  rect(b, ox + 17, hy + 11, 4, 1, C.beard);
+  rect(b, ox + 25, hy + 11, 4, 1, C.beard);
+  rect(b, ox + 18, hy + 13, 2, 1, C.hairDeep);
+  rect(b, ox + 26, hy + 13, 2, 1, C.hairDeep);
 
-  // nose, then mouth
-  rect(b, ox + 22, hy + 16, 2, 2, C.skinShade);
-  px(b, ox + 24, hy + 17, C.skinLit);
-  rect(b, ox + 20, hy + 21, 6, 1, C.beard);
+  rect(b, ox + 22, hy + 16, 2, 2, C.skinShade); // nose
+  put(b, ox + 24, hy + 17, C.skinLit);
 
-  /* Stubble: a plain checkerboard so skin shows through evenly. A modulo
-   * hash looked like diagonal hatching; a solid fill looked like a mask. */
-  for (let y = hy + 18; y <= hy + 24; y++) {
+  // the smile, with a hint of teeth
+  rect(b, ox + 19, hy + 20, 7, 1, C.beard);
+  rect(b, ox + 20, hy + 21, 5, 1, C.tooth);
+  put(b, ox + 18, hy + 19, C.beard);
+  put(b, ox + 26, hy + 19, C.beard);
+
+  // full beard along the jaw, moustache above the smile
+  for (let y = hy + 17; y <= hy + 25; y++) {
     for (let x = ox + 15; x <= ox + 30; x++) {
-      if ((x + y) % 2 === 1) continue;
-      if (y < hy + 20 && (x < ox + 17 || x > ox + 28)) continue; // thin at the cheeks
-      if (y === hy + 21 && x > ox + 19 && x < ox + 26) continue; // keep the mouth
-      px(b, x, y, C.beard);
+      if (y >= hy + 20 && y <= hy + 21 && x > ox + 18 && x < ox + 26) continue; // mouth
+      const dense = y > hy + 21 || x < ox + 18 || x > ox + 27;
+      if (!dense && (x + y) % 2 === 1) continue; // thins out at the cheeks
+      put(b, x, y, y > hy + 22 ? C.beard : C.beardLit);
     }
   }
-  rect(b, ox + 18, hy + 23, 10, 1, C.beard); // firmer along the jaw
+  rect(b, ox + 19, hy + 18, 8, 1, C.beard); // moustache
 
-  // hair — one tall swept mass, highlight along the sweep, no stepped fringe
+  // hair — thick, wavy, high volume. A flat cap reads as a helmet, so the
+  // crown is built from three offset lobes with notches between them.
   rect(b, ox + 11, hy, 24, 9, C.hair);
-  rect(b, ox + 13, hy - 3, 20, 3, C.hair);
-  rect(b, ox + 16, hy - 4, 14, 1, C.hair);
-  rect(b, ox + 15, hy - 3, 15, 2, C.hairLit); // sheen
-  rect(b, ox + 18, hy - 4, 9, 1, C.hairLit);
-  rect(b, ox + 10, hy + 3, 3, 9, C.hairDark); // sideburns
+  rect(b, ox + 13, hy - 3, 9, 3, C.hair);
+  rect(b, ox + 23, hy - 4, 10, 4, C.hair);
+  rect(b, ox + 18, hy - 5, 8, 2, C.hair);
+  rect(b, ox + 15, hy - 2, 6, 2, C.hairLit); // sheen across the waves
+  rect(b, ox + 24, hy - 3, 7, 2, C.hairLit);
+  put(b, ox + 22, hy - 4, C.hairLit);
+  rect(b, ox + 10, hy + 3, 3, 9, C.hairDark); // sideburns into the beard
   rect(b, ox + 33, hy + 3, 3, 9, C.hairDark);
-  rect(b, ox + 11, hy + 6, 2, 3, C.hairDeep); // deepest at the temples
+  rect(b, ox + 11, hy + 6, 2, 3, C.hairDeep);
   rect(b, ox + 34, hy + 6, 2, 3, C.hairDeep);
-  // the hairline dips slightly to one side rather than sitting level
-  rect(b, ox + 12, hy + 9, 8, 1, C.hairDark);
-  rect(b, ox + 26, hy + 9, 8, 1, C.hairDark);
+  // wave notches, so the silhouette is not a solid dome
+  for (const [wx, wy] of [
+    [14, -1],
+    [20, -2],
+    [27, -2],
+    [31, 0],
+  ] as const) {
+    put(b, ox + wx, hy + wy, C.hairLit);
+    put(b, ox + wx + 1, hy + wy + 1, C.hairDeep);
+  }
+  rect(b, ox + 12, hy + 9, 9, 1, C.hairDark); // uneven hairline
+  rect(b, ox + 25, hy + 9, 9, 1, C.hairDark);
 
   /* ---- laptop --------------------------------------------------------------- */
   // lid, tilted back — screen faces away, we see the shell
@@ -262,8 +295,8 @@ export function paintPerson(frame: number): Buf {
   // glow spilling over the top edge — pulses on the beat
   const glow = leftDown ? C.screenGlow : C.screen;
   rect(b, ox + 13, oy + 41, 21, 1, glow);
-  px(b, ox + 12, oy + 41, C.screen);
-  px(b, ox + 34, oy + 41, C.screen);
+  put(b, ox + 12, oy + 41, C.screen);
+  put(b, ox + 34, oy + 41, C.screen);
   // and bouncing back onto the underside of his jaw
   rect(b, ox + 19, hy + 25, 8, 1, C.skinLit);
 

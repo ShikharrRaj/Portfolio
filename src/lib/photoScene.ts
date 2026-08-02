@@ -168,9 +168,61 @@ function source(): Src {
 const lum = (d: Uint8ClampedArray, i: number) =>
   0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
 
-/** True where the reference is open sky, so clouds can sit behind the city. */
-function isSky(d: Uint8ClampedArray, i: number, y: number) {
-  return y < 120 && d[i + 2] - d[i] > 22 && lum(d, i) > 70;
+/**
+ * Sky detection by FLOOD FILL from the top edge, not by colour alone.
+ *
+ * A pure colour test ("blue-ish and bright") also matches the blue-tinted
+ * glass running up the towers on the left, which punched vertical stripes
+ * of sky straight through the buildings. Real sky is connected to the top
+ * of the frame; a window is enclosed by masonry. Flooding down from row 0
+ * separates the two exactly, with no thresholds to tune.
+ */
+function skyish(d: Uint8ClampedArray, i: number) {
+  return d[i + 2] - d[i] > 16 && lum(d, i) > 96;
+}
+
+let skyMask: Uint8Array | null = null;
+
+function sky(): Uint8Array {
+  if (skyMask) return skyMask;
+  const s = source();
+  const m = new Uint8Array(s.w * s.h);
+  const stack: number[] = [];
+
+  for (let x = 0; x < s.w; x++) {
+    if (skyish(s.data, x * 4)) {
+      m[x] = 1;
+      stack.push(x);
+    }
+  }
+
+  while (stack.length) {
+    const p = stack.pop()!;
+    const x = p % s.w;
+    const y = (p / s.w) | 0;
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ] as const) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (nx < 0 || ny < 0 || nx >= s.w || ny >= s.h) continue;
+      const q = ny * s.w + nx;
+      if (m[q]) continue;
+      if (!skyish(s.data, q * 4)) continue;
+      m[q] = 1;
+      stack.push(q);
+    }
+  }
+
+  skyMask = m;
+  return m;
+}
+
+function isSky(_d: Uint8ClampedArray, i: number, _y: number) {
+  return sky()[i >> 2] === 1;
 }
 
 

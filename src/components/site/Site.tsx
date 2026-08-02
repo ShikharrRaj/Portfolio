@@ -469,39 +469,49 @@ export function Site({ layers }: { layers: SceneLayers }) {
         </Section>
 
         <Section id="contact" eyebrow="Contact" title="Let's build something.">
-          <div className="rounded-2xl bg-slate-900 p-8 sm:p-10">
-            <p className="max-w-xl text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
-              This is a snapshot. The real product is what we could build together.
-            </p>
-            <p className="mt-4 max-w-lg text-[0.95rem] leading-relaxed text-slate-400">
-              {profile.availability}. Based in {profile.location}.
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${profile.email}`}
-                className="pressable inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-900"
-              >
-                Email me
-                <Arrow />
-              </a>
-              <a
-                href={profile.resumeUrl}
-                className="pressable inline-flex items-center rounded-full border border-slate-700 px-6 py-3 text-sm font-medium text-slate-200 transition-colors hover:border-slate-500 hover:text-white"
-              >
-                Résumé
-                <Arrow />
-              </a>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-slate-800 pt-6">
-              {profile.socials.map((s) => (
+          {/* Deep forest, not slate. This is the page's one dark surface, and
+              pulling its colour from the treeline in the hero ties the two ends
+              of the page together. Neutral grey read as a default — because it
+              was one. */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#12291F] p-8 sm:p-10">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_12%_0%,#22503A_0%,#153123_45%,#0B1C15_100%)]"
+            />
+            <div className="relative">
+              <p className="max-w-xl text-balance text-2xl font-semibold leading-tight tracking-tight text-[#F3F8F4] sm:text-3xl">
+                This is a snapshot. The real product is what we could build together.
+              </p>
+              <p className="mt-4 max-w-lg text-[0.95rem] leading-relaxed text-[#9EBCAA]">
+                {profile.availability}. Based in {profile.location}.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-3">
                 <a
-                  key={s.label}
-                  href={s.href}
-                  className="text-sm text-slate-300 underline-offset-4 transition-colors hover:text-emerald-300 hover:underline"
+                  href={`mailto:${profile.email}`}
+                  className="pressable inline-flex items-center rounded-full bg-[#7BD8A4] px-6 py-3 text-sm font-semibold text-[#0B1C15]"
                 >
-                  <span className="text-slate-500">{s.label}</span> {s.handle}
+                  Email me
+                  <Arrow />
                 </a>
-              ))}
+                <a
+                  href={profile.resumeUrl}
+                  className="pressable inline-flex items-center rounded-full border border-[#3C6A53] px-6 py-3 text-sm font-medium text-[#CFE4D7] transition-colors hover:border-[#5F9376] hover:text-white"
+                >
+                  Résumé
+                  <Arrow />
+                </a>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-[#2B4C39] pt-6">
+                {profile.socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    className="text-sm text-[#BAD4C4] underline-offset-4 transition-colors hover:text-[#7BD8A4] hover:underline"
+                  >
+                    <span className="text-[#71937F]">{s.label}</span> {s.handle}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </Section>
