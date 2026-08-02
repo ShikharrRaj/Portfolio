@@ -381,9 +381,17 @@ function Recognition() {
         ))}
       </ul>
 
-      <ul className="grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2">
+      {/* Separate cards on a gap, on the same grid as the awards above. This
+          used to be a hairline table that drew its dividers with the grid's
+          own background showing through 1px gaps — which meant an odd count
+          left the empty cell showing through as a grey block. Cards on a gap
+          have no cell to leave uncovered. */}
+      <ul className="grid gap-4 sm:grid-cols-2">
         {rest.map((a) => (
-          <li key={a.title} className="flex flex-col gap-1 bg-white px-5 py-4">
+          <li
+            key={a.title}
+            className="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white p-6"
+          >
             <span
               className={`w-fit rounded-full px-2 py-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.14em] ${
                 TYPE_TONE[a.type] ?? "bg-slate-100 text-slate-700"
