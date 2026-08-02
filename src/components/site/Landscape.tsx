@@ -27,7 +27,7 @@ const px = { imageRendering: "pixelated" as const };
 
 export function Landscape({ layers }: { layers: SceneLayers }) {
   return (
-    <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden bg-[#5197D2]">
+    <div aria-hidden className="absolute inset-0 -z-10 overflow-clip bg-[#5197D2]">
       {/* far — sky and clouds barely move */}
       <div className={`${L} px-depth-far`}>
         <img src={layers.sky} alt="" className={L} style={px} />

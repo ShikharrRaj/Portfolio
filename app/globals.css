@@ -462,10 +462,30 @@
     background: rgb(4 120 87); /* emerald-700 */
     scale: 0 1;
     transform-origin: center;
+    transition: scale 0.24s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  /* Firefox has NOT shipped scroll-driven animations (flag-gated as of 153),
+     so ~15% of visitors never run the scrollspy below. Without this they get
+     no underline at all. :target covers the click case and :has() is at 93%,
+     so the fallback is genuinely broad. */
+  @supports not (animation-timeline: view()) {
+    .navlink:hover::after,
+    .navlink:focus-visible::after {
+      scale: 1 1;
+    }
+    body:has(#work:target) .navlink[href="#work"]::after,
+    body:has(#journey:target) .navlink[href="#journey"]::after,
+    body:has(#skills:target) .navlink[href="#skills"]::after,
+    body:has(#recognition:target) .navlink[href="#recognition"]::after,
+    body:has(#experience:target) .navlink[href="#experience"]::after,
+    body:has(#contact:target) .navlink[href="#contact"]::after {
+      scale: 1 1;
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
+    @supports ((animation-timeline: view()) and (animation-range: 0% 100%)) {
       /* Each section publishes a timeline; timeline-scope hoists the names
          to the root so the fixed nav — which is not an ancestor or a
          descendant of the sections — can consume them. */
@@ -505,7 +525,9 @@
       }
       .navlink::after {
         animation: navspy linear both;
+        animation-duration: auto;
         animation-range: cover 0% cover 100%;
+        transition: none; /* the timeline drives it now */
       }
       .navlink[href="#work"]::after {
         animation-timeline: --s-work;
@@ -540,6 +562,7 @@
       }
       .reveal {
         animation: section-in linear both;
+        animation-duration: auto;
         animation-timeline: view();
         animation-range: entry 8% cover 20%;
       }
@@ -567,26 +590,39 @@
           transform: translate3d(0, -5%, 0);
         }
       }
+      /* animation-timeline is a reset-only sub-property of the `animation`
+         shorthand: written BEFORE it, it is silently reset to auto. Each
+         plane therefore carries its own complete shorthand, longhands after.
+         Duration is stated explicitly — a concrete duration on a progress
+         timeline is reinterpreted as a proportion of the range. */
       .px-depth-far,
       .px-depth-mid,
       .px-depth-near,
       .px-depth-fore {
-        animation: linear both;
+        animation-duration: auto;
         animation-timeline: scroll(root block);
         animation-range: 0 100vh;
         will-change: transform;
       }
       .px-depth-far {
-        animation-name: depth-far;
+        animation: depth-far linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
       }
       .px-depth-mid {
-        animation-name: depth-mid;
+        animation: depth-mid linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
       }
       .px-depth-near {
-        animation-name: depth-near;
+        animation: depth-near linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
       }
       .px-depth-fore {
-        animation-name: depth-fore;
+        animation: depth-fore linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
       }
     }
   }

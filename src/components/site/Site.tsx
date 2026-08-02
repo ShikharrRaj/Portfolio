@@ -80,7 +80,7 @@ function Nav() {
 
 function Hero({ layers }: { layers: SceneLayers }) {
   return (
-    <header className="relative isolate min-h-[100svh] overflow-hidden bg-[#5197D2]">
+    <header className="relative isolate min-h-[100svh] overflow-clip bg-[#5197D2]">
       <Landscape layers={layers} />
 
 
