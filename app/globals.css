@@ -355,59 +355,31 @@
 /* ------------------------------------------------------------------ */
 /*  Pixel landscape — wind                                             */
 /*  ------------------------------------------------------------------ */
-/*  Whole-pixel motion only. The scene is 384 logical px wide, so one    */
-/*  pixel is 1/384 = 0.26% — sway steps by exactly that. Sub-pixel       */
-/*  movement would soften the art no matter what image-rendering says.   */
+/*  Frame-swap animation, the way pixel art actually moves: each frame is  */
+/*  a separately painted image and only one is visible at a time. Tweening */
+/*  would resample the art and soften it, whatever image-rendering says.   */
 /* ------------------------------------------------------------------ */
 @layer utilities {
-  /* Clouds: continuous, extremely slow. */
+  /* Clouds are the one exception — a continuous, very slow glide. At this
+     speed the shift is invisible frame to frame, so nothing softens. */
   @keyframes px-drift {
     0% {
-      transform: translate3d(-1.2%, 0, 0);
+      transform: translate3d(-1.6%, 0, 0);
     }
     50% {
-      transform: translate3d(1.2%, 0, 0);
+      transform: translate3d(1.6%, 0, 0);
     }
     100% {
-      transform: translate3d(-1.2%, 0, 0);
+      transform: translate3d(-1.6%, 0, 0);
     }
   }
   .px-drift {
-    animation: px-drift 96s ease-in-out infinite;
+    animation: px-drift 110s ease-in-out infinite;
     will-change: transform;
   }
 
-  /* Canopies: discrete 1px sway, holding each position. */
-  @keyframes px-sway {
-    0%,
-    24% {
-      transform: translate3d(0, 0, 0);
-    }
-    25%,
-    49% {
-      transform: translate3d(0.26%, 0, 0);
-    }
-    50%,
-    74% {
-      transform: translate3d(0, 0, 0);
-    }
-    75%,
-    100% {
-      transform: translate3d(-0.26%, 0, 0);
-    }
-  }
-  .px-sway-a {
-    animation: px-sway 6.4s steps(1, end) infinite;
-    will-change: transform;
-  }
-  .px-sway-b {
-    animation: px-sway 8.6s steps(1, end) infinite;
-    animation-delay: -2.1s;
-    will-change: transform;
-  }
-
-  /* Grass: 4-frame swap. Each layer holds for a quarter of the cycle. */
-  @keyframes px-grass {
+  /* One quarter of the cycle visible, then hidden — a 4-frame flipbook. */
+  @keyframes px-frame4 {
     0%,
     24.9% {
       opacity: 1;
@@ -417,22 +389,27 @@
       opacity: 0;
     }
   }
+
   .px-grass {
     opacity: 0;
-    animation: px-grass 1s steps(1, end) infinite;
+    animation: px-frame4 1s steps(1, end) infinite;
   }
 
-  /* Wind stops entirely when motion is not wanted; frame 1 stays up. */
+  /* Slower than the grass: a bough has more mass than a blade. */
+  .px-bough {
+    opacity: 0;
+    animation: px-frame4 2.8s steps(1, end) infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .px-drift,
-    .px-sway-a,
-    .px-sway-b,
-    .px-grass {
+    .px-grass,
+    .px-bough {
       animation: none;
       transform: none;
     }
-    /* :first-of-type would match the backdrop image, not a grass frame. */
-    .px-grass-first {
+    /* :first-of-type would match the sky image, not a frame. */
+    .px-frame-first {
       opacity: 1;
     }
   }

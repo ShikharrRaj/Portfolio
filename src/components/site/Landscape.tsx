@@ -4,14 +4,13 @@
  * client JS, no canvas, no animation loop. Every layer is the same size and
  * uses the same object-fit, so they stay in register at any viewport.
  *
- * Motion is deliberately quantised. Sub-pixel drift on pixel art reads as
- * mush, so the trees and grass move in whole-pixel steps; only the clouds
- * glide continuously, and at their speed the shift is invisible frame to
- * frame.
+ * Stacking order is load-bearing:
  *
- * Stacking order is load-bearing — see the note in pixelScene.ts. In
- * particular the props layer must sit ABOVE the grass, or tufts speckle
- * straight across the laptop.
+ *   sky     the reference's own sky, rebuilt as a clean gradient, plus a sun
+ *   clouds  DRIFTS — behind the city, so buildings occlude them
+ *   front   skyline, treeline, lawn, and the meadow replacing the shadow
+ *   grass   CYCLES — four frames of wind in the foreground turf
+ *   bough   CYCLES — the overhanging branch, nearest the viewer
  */
 
 import type { SceneLayers } from "@/lib/png";
@@ -21,35 +20,34 @@ const px = { imageRendering: "pixelated" as const };
 
 export function Landscape({ layers }: { layers: SceneLayers }) {
   return (
-    <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden bg-[#66B8EE]">
-      {/* 1 — sky + sun */}
+    <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden bg-[#5197D2]">
       <img src={layers.sky} alt="" className={L} style={px} />
 
-      {/* 2 — clouds drift, slowly and continuously */}
       <img src={layers.clouds} alt="" className={`${L} px-drift`} style={px} />
 
-      {/* 3 — skyline, ridges, turf (occludes the clouds behind it) */}
-      <img src={layers.land} alt="" className={L} style={px} />
+      <img src={layers.front} alt="" className={L} style={px} />
 
-      {/* 4 — four frames of wind; one visible at a time */}
       {layers.grass.map((src, i) => (
         <img
-          key={i}
+          key={`g${i}`}
           src={src}
           alt=""
-          className={`${L} px-grass${i === 0 ? " px-grass-first" : ""}`}
+          className={`${L} px-grass${i === 0 ? " px-frame-first" : ""}`}
           // Negative delays so the cycle is already staggered on frame one,
           // rather than every layer sitting hidden for the first second.
           style={{ ...px, animationDelay: `${(-i * 0.25).toFixed(2)}s` }}
         />
       ))}
 
-      {/* 5 — trunks and props, above the grass */}
-      <img src={layers.props} alt="" className={L} style={px} />
-
-      {/* 6 — canopies sway in whole pixels, out of phase with each other */}
-      <img src={layers.canopyL} alt="" className={`${L} px-sway-a`} style={px} />
-      <img src={layers.canopyR} alt="" className={`${L} px-sway-b`} style={px} />
+      {layers.bough.map((src, i) => (
+        <img
+          key={`b${i}`}
+          src={src}
+          alt=""
+          className={`${L} px-bough${i === 0 ? " px-frame-first" : ""}`}
+          style={{ ...px, animationDelay: `${(-i * 0.7).toFixed(2)}s` }}
+        />
+      ))}
     </div>
   );
 }

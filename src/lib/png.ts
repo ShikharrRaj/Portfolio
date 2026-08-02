@@ -10,7 +10,8 @@
  */
 
 import { deflateSync } from "node:zlib";
-import { GRASS_FRAMES, type Buf } from "./pixelScene";
+import { BOUGH_FRAMES, GRASS_FRAMES } from "./photoScene";
+import { type Buf } from "./pixelScene";
 
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
@@ -66,20 +67,16 @@ export function encodePng(b: Buf): Buffer {
 export type SceneLayers = {
   sky: string;
   clouds: string;
-  land: string;
+  front: string;
   grass: string[];
-  props: string;
-  canopyL: string;
-  canopyR: string;
+  bough: string[];
 };
 
 /** URLs of the prerendered layers. Served by app/scene/[layer]/route.ts. */
 export const SCENE_LAYERS: SceneLayers = {
   sky: "/scene/sky.png",
   clouds: "/scene/clouds.png",
-  land: "/scene/land.png",
+  front: "/scene/front.png",
   grass: Array.from({ length: GRASS_FRAMES }, (_, f) => `/scene/grass-${f}.png`),
-  props: "/scene/props.png",
-  canopyL: "/scene/canopy-l.png",
-  canopyR: "/scene/canopy-r.png",
+  bough: Array.from({ length: BOUGH_FRAMES }, (_, f) => `/scene/bough-${f}.png`),
 };

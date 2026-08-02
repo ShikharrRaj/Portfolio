@@ -7,28 +7,28 @@
  */
 
 import {
+  BOUGH_FRAMES,
   GRASS_FRAMES,
-  paintCanopy,
-  paintClouds,
-  paintGrass,
-  paintLand,
-  paintProps,
-  paintSky,
-  type Buf,
-} from "@/lib/pixelScene";
+  photoBough,
+  photoClouds,
+  photoFront,
+  photoGrass,
+  photoSkyWithSun,
+} from "@/lib/photoScene";
+import { type Buf } from "@/lib/pixelScene";
 import { encodePng } from "@/lib/png";
 
 export const dynamic = "force-static";
 
 const PAINTERS: Record<string, () => Buf> = {
-  sky: paintSky,
-  clouds: paintClouds,
-  land: paintLand,
-  props: paintProps,
-  "canopy-l": () => paintCanopy("left"),
-  "canopy-r": () => paintCanopy("right"),
+  sky: photoSkyWithSun,
+  clouds: photoClouds,
+  front: photoFront,
   ...Object.fromEntries(
-    Array.from({ length: GRASS_FRAMES }, (_, f) => [`grass-${f}`, () => paintGrass(f)]),
+    Array.from({ length: GRASS_FRAMES }, (_, f) => [`grass-${f}`, () => photoGrass(f)]),
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: BOUGH_FRAMES }, (_, f) => [`bough-${f}`, () => photoBough(f)]),
   ),
 };
 
