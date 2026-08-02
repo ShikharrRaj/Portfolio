@@ -460,14 +460,17 @@ export type Achievement = {
   title: string;
   org: string;
   year: string;
+  /** Optional second line — a score, a placing, a detail worth keeping. */
+  note?: string;
 };
 
 export const achievements: Achievement[] = [
   {
     type: "Award",
-    title: "Prompt Wars — 98.93/100 AI evaluation score (top-ranked build)",
+    title: "Virtual Prompt Wars — Rank #80 of 45,641",
     org: "Hack2skill × Google for Developers",
     year: "2026",
+    note: "98.93/100 AI evaluation score",
   },
   {
     type: "Award",

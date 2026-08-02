@@ -323,6 +323,7 @@ function Recognition() {
               {a.title}
             </h3>
             <p className="mt-2 text-sm text-slate-600">{a.org}</p>
+            {a.note && <p className="mt-1 text-sm text-amber-800">{a.note}</p>}
           </li>
         ))}
       </ul>

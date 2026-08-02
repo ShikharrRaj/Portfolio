@@ -10,6 +10,7 @@
  *   clouds  DRIFTS — behind the city, so buildings occlude them
  *   front   skyline, treeline, lawn, and the meadow replacing the shadow
  *   grass   CYCLES — four frames of wind in the foreground turf
+ *   me      CYCLES — the figure on the lawn, typing
  *   bough   CYCLES — the overhanging branch, nearest the viewer
  */
 
@@ -36,6 +37,16 @@ export function Landscape({ layers }: { layers: SceneLayers }) {
           // Negative delays so the cycle is already staggered on frame one,
           // rather than every layer sitting hidden for the first second.
           style={{ ...px, animationDelay: `${(-i * 0.25).toFixed(2)}s` }}
+        />
+      ))}
+
+      {layers.me.map((src, i) => (
+        <img
+          key={`m${i}`}
+          src={src}
+          alt=""
+          className={`${L} px-person${i === 0 ? " px-frame-first" : ""}`}
+          style={{ ...px, animationDelay: `${(-i * 0.18).toFixed(2)}s` }}
         />
       ))}
 

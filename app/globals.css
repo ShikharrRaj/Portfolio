@@ -395,6 +395,12 @@
     animation: px-frame4 1s steps(1, end) infinite;
   }
 
+  /* Typing: four beats to a cycle, about five a second. */
+  .px-person {
+    opacity: 0;
+    animation: px-frame4 0.72s steps(1, end) infinite;
+  }
+
   /* Slower than the grass: a bough has more mass than a blade. */
   .px-bough {
     opacity: 0;
@@ -404,6 +410,7 @@
   @media (prefers-reduced-motion: reduce) {
     .px-drift,
     .px-grass,
+    .px-person,
     .px-bough {
       animation: none;
       transform: none;

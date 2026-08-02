@@ -84,10 +84,11 @@ export type CaseFile = {
   constraints: string;
   architecture: string;
   decision: string;
-  failed: string;
-  worked: string;
+  /** Only where it is genuinely known — never invented to fill the shape. */
+  failed?: string;
+  worked?: string;
   impact: string;
-  today: string;
+  today?: string;
   stack: string[];
 };
 
@@ -139,6 +140,78 @@ export const caseFiles: CaseFile[] = [
     today:
       "Extend the same pattern further across the SDLC rather than stopping at design-to-code — the boundary generalises better than the specific integration does.",
     stack: ["Claude", "Figma MCP", "TypeScript", "Automation"],
+  },
+  {
+    id: "bajaj-bgil",
+    title: "Bajaj BGIL",
+    client: "Bajaj",
+    year: "2025",
+    classification: "NDA",
+    tagline: "Insurance tracking for agents and relationship managers.",
+    problem:
+      "Agents and RMs had no unified view of insurance across their book of business, so tracking meant stitching together separate systems by hand.",
+    constraints:
+      "Enterprise insurance client, agency delivery timelines, and a distribution audience who live in the tool all day — so workflow speed mattered more than visual novelty.",
+    architecture:
+      "Angular application built around the daily workflow of a distribution team: a single unified view of the book, with the tracking actions that follow it reachable without leaving that view.",
+    decision:
+      "Optimised for the repeat user, not the first-time visitor. Distribution teams open this every morning, so density and speed beat onboarding polish.",
+    impact: "Improved workflow efficiency for Bajaj's distribution teams.",
+    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    id: "bajaj-insurcraft",
+    title: "Bajaj Insurcraft",
+    client: "Bajaj",
+    year: "2025",
+    classification: "NDA",
+    tagline: "Customer-facing insurance tracking, self-serve.",
+    problem:
+      "Customers had no transparency into their own insurance status and details, which pushed routine questions into the support queue.",
+    constraints:
+      "Public-facing surface for a regulated insurer: it had to be clear enough for a first-time user with no product knowledge, and correct enough to be relied on.",
+    architecture:
+      "A deliberately plain self-serve web app — status and policy detail surfaced directly rather than buried behind navigation, so the common question answers itself.",
+    decision:
+      "Cut the interface back rather than add to it. Every element that did not answer 'what is the state of my policy' was removed.",
+    impact: "Reduced support load by making the routine question self-serve.",
+    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    id: "bajaj-ekyc",
+    title: "Bajaj EKYC",
+    client: "Bajaj",
+    year: "2025",
+    classification: "NDA",
+    tagline: "Compliant digital onboarding, with fewer drop-offs.",
+    problem:
+      "Customer onboarding needed a digital KYC flow that was fast enough not to lose people, while staying compliant at every step.",
+    constraints:
+      "Regulatory requirements fix what must be captured and verified. The only variable left is how much friction each step costs — and every extra step loses customers.",
+    architecture:
+      "A guided step-by-step eKYC journey where each stage does one thing, state survives interruption, and the customer always knows what remains.",
+    decision:
+      "Treated drop-off as the primary metric rather than completion time. A flow that is fast but abandons people mid-way is worse than one that is patient and finishes.",
+    impact: "Smoother customer onboarding with fewer drop-offs.",
+    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    id: "dark-software-factory",
+    title: "Dark Software Factory",
+    year: "2026",
+    classification: "OPEN",
+    tagline: "An autonomous engineering org that ships software with minimal human input.",
+    problem:
+      "AI coding tools generate code but do not run an engineering organisation. Nobody owns the architecture decision, nobody rejects defective work back to its author, and nobody holds the release gate — so output scales while judgment does not.",
+    constraints:
+      "A 'dark factory' runs without the lights on: no human in the loop for routine steps. That only works if the boundaries are mechanical rather than advisory — an agent that can be persuaded to write outside its domain is not a boundary at all.",
+    architecture:
+      "22 specialist roles (Engineering Manager, Staff Architect, leads, and cross-cutting reviewers) over a 15-stage pipeline from PRD to release. Ownership lives in a machine-readable role matrix and is enforced by pre-tool-use hooks, not by prompt instructions — a role that tries to write outside its glob is blocked before the edit happens. 19 procedure skills, 205 numbered rules across 7 standards, and two linters that prove no role overlaps another and every consumed artefact has a producer.",
+    decision:
+      "Enforcement over instruction. Every earlier attempt asked agents nicely to respect boundaries; this one makes the boundary a precondition of the tool call. Roles also validate their own inputs and can reject defective work back to its owner rather than silently patching it downstream.",
+    impact:
+      "Runs an entire delivery pipeline — requirements, architecture, build, review, release — with the human acting as CEO rather than as an engineer.",
+    stack: ["Claude Agent SDK", "TypeScript", "Node", "MCP", "Shell hooks"],
   },
   {
     id: "nuvama-rta",

@@ -10,6 +10,7 @@
  */
 
 import { deflateSync } from "node:zlib";
+import { PERSON_FRAMES } from "./person";
 import { BOUGH_FRAMES, GRASS_FRAMES } from "./photoScene";
 import { type Buf } from "./pixelScene";
 
@@ -69,6 +70,7 @@ export type SceneLayers = {
   clouds: string;
   front: string;
   grass: string[];
+  me: string[];
   bough: string[];
 };
 
@@ -78,5 +80,6 @@ export const SCENE_LAYERS: SceneLayers = {
   clouds: "/scene/clouds.png",
   front: "/scene/front.png",
   grass: Array.from({ length: GRASS_FRAMES }, (_, f) => `/scene/grass-${f}.png`),
+  me: Array.from({ length: PERSON_FRAMES }, (_, f) => `/scene/me-${f}.png`),
   bough: Array.from({ length: BOUGH_FRAMES }, (_, f) => `/scene/bough-${f}.png`),
 };

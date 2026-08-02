@@ -15,6 +15,7 @@ import {
   photoGrass,
   photoSkyWithSun,
 } from "@/lib/photoScene";
+import { PERSON_FRAMES, paintPerson } from "@/lib/person";
 import { type Buf } from "@/lib/pixelScene";
 import { encodePng } from "@/lib/png";
 
@@ -29,6 +30,9 @@ const PAINTERS: Record<string, () => Buf> = {
   ),
   ...Object.fromEntries(
     Array.from({ length: BOUGH_FRAMES }, (_, f) => [`bough-${f}`, () => photoBough(f)]),
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: PERSON_FRAMES }, (_, f) => [`me-${f}`, () => paintPerson(f)]),
   ),
 };
 
