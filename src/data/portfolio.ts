@@ -36,6 +36,21 @@ export const profile = {
   ],
 } as const;
 
+/**
+ * What the figure on the lawn says when you tap him.
+ *
+ * One line per tap, in order, then it loops. Keep them short — the bubble
+ * is anchored to a 45-pixel-wide sprite and a long line covers his face.
+ * Written in his voice, present tense, as if you had walked up and asked.
+ */
+export const sceneLines: readonly string[] = [
+  "Hey. Shipping a corporate banking platform this quarter.",
+  "Mostly architecture and delivery lately. Some of it from this lawn.",
+  "Built a Claude × Figma pipeline — team moved 25–30% faster.",
+  "Three and a half years: banking, wealth, insurance.",
+  "Scroll on. There's more of this below.",
+] as const;
+
 export type Stat = {
   label: string;
   value: number;
@@ -137,7 +152,7 @@ export const experiences: Experience[] = [
       },
       {
         name: "Bajaj",
-        project: "Bajaj Insurcraft",
+        project: "Bajaj Insurecraft",
         description: "Web app for insurance tracking for customers.",
       },
       {
@@ -224,12 +239,12 @@ export const projects: Project[] = [
     solution:
       "A web application streamlining insurance tracking workflows for agents and Relationship Managers.",
     impact: "Improved workflow efficiency for distribution teams.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["React", "TypeScript", "Tailwind CSS"],
     accent: ["#276749", "#38a169"],
     confidential: true,
   },
   {
-    title: "Bajaj Insurcraft",
+    title: "Bajaj Insurecraft",
     category: "Fintech",
     client: "Bajaj",
     year: "2025",
@@ -238,7 +253,7 @@ export const projects: Project[] = [
     solution:
       "A clean, customer-facing web app for self-serve insurance tracking.",
     impact: "Reduced support load via self-service visibility.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["HTML", "CSS", "JavaScript"],
     accent: ["#38a169", "#68d391"],
     confidential: true,
   },
@@ -252,7 +267,7 @@ export const projects: Project[] = [
     solution:
       "A guided eKYC web experience optimizing the customer onboarding process.",
     impact: "Smoother onboarding with fewer drop-offs.",
-    stack: ["Angular", "TypeScript", "Tailwind CSS"],
+    stack: ["HTML", "CSS", "JavaScript"],
     accent: ["#2f855a", "#38a169"],
     confidential: true,
   },
@@ -460,14 +475,24 @@ export type Achievement = {
   title: string;
   org: string;
   year: string;
+  /** Optional second line — a score, a placing, a detail worth keeping. */
+  note?: string;
 };
 
 export const achievements: Achievement[] = [
   {
     type: "Award",
-    title: "Prompt Wars — 98.93/100 AI evaluation score (top-ranked build)",
+    title: "Prompt Wars (in person) — 98.93/100",
     org: "Hack2skill × Google for Developers",
     year: "2026",
+    note: "On-site round",
+  },
+  {
+    type: "Award",
+    title: "Prompt Wars (virtual) — Rank #80 of 45,641",
+    org: "Hack2skill × Google for Developers",
+    year: "2026",
+    note: "96.9/100 AI evaluation score",
   },
   {
     type: "Award",
@@ -741,7 +766,7 @@ export const architecture: ArchCase[] = [
     scale: "Multi-client · shared design system · −20–25% turnaround",
     nodes: [
       { id: "ds", label: "Design System", detail: "Shared, type-safe components for pixel-perfect UI." },
-      { id: "apps", label: "Angular Apps", detail: "RTA, BGIL, Insurcraft & EKYC built on one foundation." },
+      { id: "apps", label: "Client Apps", detail: "RTA (Angular), BGIL (React), Insurecraft & EKYC (HTML/CSS)." },
       { id: "api", label: "Service Layer", detail: "Domain APIs for portfolios, policies and KYC." },
       { id: "deploy", label: "Frontend Deploy", detail: "Owned release pipeline from the frontend." },
     ],

@@ -22,12 +22,15 @@ const config: Config = {
           DEFAULT: "rgb(var(--accent) / <alpha-value>)",
           soft: "rgb(var(--accent-soft) / <alpha-value>)",
         },
+        warm: "rgb(var(--warm) / <alpha-value>)",
         gold: "rgb(var(--gold) / <alpha-value>)",
         ember: "rgb(var(--ember) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
+        pixel: ["var(--font-pixel)", "ui-monospace", "monospace"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       fontSize: {

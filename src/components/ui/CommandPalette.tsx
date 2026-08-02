@@ -157,7 +157,7 @@ export function CommandPalette() {
                   <span className={iconBox}>
                     <Download className="h-3.5 w-3.5" />
                   </span>
-                  Download Résumé
+                  Download Resume
                   <span className="ml-auto text-xs text-faint">PDF</span>
                 </CommandItem>
                 <CommandItem value="copy email address" onSelect={run(copyEmail, true)}>

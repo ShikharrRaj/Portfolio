@@ -30,6 +30,7 @@
 
     --accent: 47 133 90; /* #2F855A forest green — primary */
     --accent-soft: 104 211 145; /* #68D391 mint — secondary */
+    --warm: 192 138 91; /* #C08A5B warm accent — the only non-green hue */
     --gold: 56 161 105; /* #38A169 mid green (mid gradient stop) */
     --ember: 34 197 94; /* #22C55E success green (secondary slot) */
 
@@ -51,6 +52,7 @@
 
     --accent: 39 103 73; /* #276749 deeper forest for contrast on light */
     --accent-soft: 56 161 105; /* #38A169 */
+    --warm: 141 96 55; /* #8D6037 — darkened for AA on paper */
     --gold: 47 133 90; /* #2F855A */
     --ember: 22 163 74; /* #16A34A */
 
@@ -64,15 +66,27 @@
   html {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* clip, not hidden. `overflow-x: hidden` makes the element a scroll
+       container, and that quietly broke the nav scrollspy: the sections'
+       view-timelines resolved against <body> instead of the viewport, and
+       <body> never scrolls, so every underline froze at some arbitrary
+       fraction of its label — Contact at a third, Experience at two thirds.
+       `clip` suppresses the same horizontal overflow without creating a
+       scroller. The `hidden` line above it is the pre-Safari-16 fallback;
+       those versions have no scroll-driven animations to break anyway. */
     overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
 
   body {
-    background-color: rgb(var(--bg));
-    color: rgb(var(--ink));
+    /* The site is light: a pixel-art sky above, paper below. */
+    background-color: #f7faf7;
+    color: #1f2937;
     font-family: var(--font-sans);
+    /* See the note on html — same reason. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* Lenis sets this; keep native smooth off so Lenis owns scrolling. */
@@ -216,5 +230,934 @@
   body.custom-cursor-active,
   body.custom-cursor-active * {
     cursor: none !important;
+  }
+}
+
+
+
+/* Hero entrance — CSS so it never depends on a client effect. */
+@layer utilities {
+  @keyframes site-rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes site-slide {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .site-rise {
+    animation: site-rise 0.55s var(--ease) both;
+  }
+  .site-slide {
+    animation: site-slide 0.55s var(--ease) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-rise,
+    .site-slide {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Pixel landscape — wind                                             */
+/*  ------------------------------------------------------------------ */
+/*  Frame-swap animation, the way pixel art actually moves: each frame is  */
+/*  a separately painted image and only one is visible at a time. Tweening */
+/*  would resample the art and soften it, whatever image-rendering says.   */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  /* Clouds are the one exception — a continuous, very slow glide. At this
+     speed the shift is invisible frame to frame, so nothing softens. */
+  @keyframes px-drift {
+    0% {
+      transform: translate3d(-1.6%, 0, 0);
+    }
+    50% {
+      transform: translate3d(1.6%, 0, 0);
+    }
+    100% {
+      transform: translate3d(-1.6%, 0, 0);
+    }
+  }
+  .px-drift {
+    animation: px-drift 110s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* One quarter of the cycle visible, then hidden — a 4-frame flipbook. */
+  @keyframes px-frame4 {
+    0%,
+    24.9% {
+      opacity: 1;
+    }
+    25%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .px-grass {
+    opacity: 0;
+    animation: px-frame4 1s steps(1, end) infinite;
+  }
+
+  /* Slower than the grass: a bough has more mass than a blade. */
+  .px-bough {
+    opacity: 0;
+    animation: px-frame4 2.8s steps(1, end) infinite;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  THE FIGURE                                                       */
+  /*  Three groups, one visible at a time: typing, packing up, waving.  */
+  /*  SceneStage sets data-* on .px-stage; every rule below reads them. */
+  /* ---------------------------------------------------------------- */
+
+  /* Typing: four beats to a cycle. The stage overrides the beat when the
+     pointer is near or the page is being scrolled hard — declared here so
+     the scene still types at a sensible rate with no JS at all. */
+  .px-stage {
+    --px-beat: 0.72s;
+    /* One scene pixel, in screen pixels. SceneStage overwrites this with
+       the live cover scale on mount and on resize; the percentage is the
+       no-JS fallback — exact at 16:9, and near enough either side of it. */
+    --px-px: 0.46%;
+  }
+
+  .px-body {
+    opacity: 0;
+    animation: px-frame4 var(--px-beat) steps(1, end) infinite;
+  }
+
+  /* Each frame starts a quarter of a cycle behind the last. Expressed
+     against the beat rather than in seconds, because the beat changes: a
+     fixed -0.18s is a quarter of 0.72s but two fifths of 0.34s, and at
+     that point the frames overlap or leave a gap where none is showing. */
+  .px-b1 {
+    animation-delay: calc(var(--px-beat) * -0.25);
+  }
+  .px-b2 {
+    animation-delay: calc(var(--px-beat) * -0.5);
+  }
+  .px-b3 {
+    animation-delay: calc(var(--px-beat) * -0.75);
+  }
+
+  /* THE NOD — he dips a pixel on two of the four beats.
+
+     This is the single thing that made the figure read as typing, and it
+     was lost, not removed on purpose: the first version drew the head into
+     the same sprite as the body, so it could nod for free. Splitting head
+     from body to stop three directions multiplying four typing frames into
+     twelve sprites took the nod with it, on the grounds that it could not
+     be synchronised to the beat without going multiplicative again.
+
+     That was wrong. The nod is a one-pixel translate, not a redraw, so CSS
+     can do it on the wrapper for nothing — no extra sprite, no extra
+     request, and it stays locked to the same --px-beat the hands run on,
+     including when the stage speeds that beat up.
+
+     Down only, never up: dipping moves the neck INTO the tee collar, where
+     lifting would open a row of grass between his jaw and his shirt. */
+  @keyframes px-nod {
+    0%,
+    24.9% {
+      transform: translate3d(0, 0, 0);
+    }
+    25%,
+    49.9% {
+      transform: translate3d(0, var(--px-px), 0);
+    }
+    50%,
+    74.9% {
+      transform: translate3d(0, 0, 0);
+    }
+    75%,
+    100% {
+      transform: translate3d(0, var(--px-px), 0);
+    }
+  }
+  .px-nod {
+    animation: px-nod var(--px-beat) steps(1, end) infinite;
+  }
+
+  /* One of three heads. Level is the default, so that a visitor with no
+     pointer, no JS and no animation still gets a face. */
+  .px-head {
+    opacity: 0;
+  }
+  .px-head-c {
+    opacity: 1;
+  }
+
+  .px-stage[data-track="on"][data-look="l"] .px-head-c,
+  .px-stage[data-track="on"][data-look="r"] .px-head-c {
+    opacity: 0;
+  }
+  .px-stage[data-track="on"][data-look="l"] .px-head-l,
+  .px-stage[data-track="on"][data-look="r"] .px-head-r {
+    opacity: 1;
+  }
+
+  /* With nobody steering him he watches the dog instead. These run on the
+     dog's own 26s period and are phased to it, so the glance has an
+     apparent cause rather than looking like a tic:
+
+        0–20%   dog still crossing the far lawn — level
+       20–53%   it arrives and sits down on his left — he looks that way
+                and stays there, because that is where it is
+       53–72%   it trots off to his right — he watches it go
+       72–100%  back to the screen
+
+     His hands never leave the keyboard through any of it. Change any of
+     these and the same numbers in px-dog-* below must move with them, or
+     he will be looking at nothing. */
+  @keyframes px-glance-l {
+    0%,
+    19.9% {
+      opacity: 0;
+    }
+    20%,
+    52.9% {
+      opacity: 1;
+    }
+    53%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes px-glance-c {
+    0%,
+    19.9% {
+      opacity: 1;
+    }
+    20%,
+    71.9% {
+      opacity: 0;
+    }
+    72%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes px-glance-r {
+    0%,
+    52.9% {
+      opacity: 0;
+    }
+    53%,
+    71.9% {
+      opacity: 1;
+    }
+    72%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .px-stage[data-track="off"] .px-head-l {
+    animation: px-glance-l 26s steps(1, end) infinite;
+  }
+  .px-stage[data-track="off"] .px-head-c {
+    animation: px-glance-c 26s steps(1, end) infinite;
+  }
+  .px-stage[data-track="off"] .px-head-r {
+    animation: px-glance-r 26s steps(1, end) infinite;
+  }
+
+  /* THE DOG. The walk is on the wrapper, the legs on the frames, so
+     neither has to share an animation slot with the other. It starts and
+     ends off-frame, so the loop's snap back happens out of sight.
+
+     The three stops are custom properties because a percentage is the
+     wrong unit here. These layers are object-cover, so a percentage of
+     the ELEMENT is not a percentage of the SCENE except at one aspect
+     ratio — the dog would stop short of him on a phone and past him on an
+     ultrawide. SceneStage redoes the cover maths and overwrites these
+     with pixel values. The percentages below are the fallback, correct on
+     a roughly 16:9 hero and close everywhere else. */
+  .px-stage {
+    --px-dog-from: -13%;
+    --px-dog-at: 44%;
+    --px-dog-to: 104%;
+  }
+
+  @keyframes px-dog-walk {
+    0% {
+      transform: translate3d(var(--px-dog-from), 0, 0);
+    }
+    38%,
+    53% {
+      transform: translate3d(var(--px-dog-at), 0, 0);
+    }
+    100% {
+      transform: translate3d(var(--px-dog-to), 0, 0);
+    }
+  }
+  .px-dog-walk {
+    animation: px-dog-walk 26s linear infinite;
+    will-change: transform;
+  }
+
+  /* Walking and sitting swap on that same cycle, at the same two marks the
+     wrapper pauses on — so it sits down exactly when it stops moving. */
+  @keyframes px-dog-going {
+    0%,
+    37.9% {
+      opacity: 1;
+    }
+    38%,
+    52.9% {
+      opacity: 0;
+    }
+    53%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes px-dog-stopped {
+    0%,
+    37.9% {
+      opacity: 0;
+    }
+    38%,
+    52.9% {
+      opacity: 1;
+    }
+    53%,
+    100% {
+      opacity: 0;
+    }
+  }
+  .px-dog-going {
+    animation: px-dog-going 26s steps(1, end) infinite;
+  }
+  .px-dog-stopped {
+    opacity: 0;
+    animation: px-dog-stopped 26s steps(1, end) infinite;
+  }
+  .px-dog {
+    opacity: 0;
+    animation: px-frame4 0.52s steps(1, end) infinite;
+  }
+
+  /* Two frames, so half the cycle each — px-frame4 would blank it for
+     three quarters of the time. */
+  @keyframes px-frame2 {
+    0%,
+    49.9% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+  .px-dogsit {
+    opacity: 0;
+    animation: px-frame2 0.6s steps(1, end) infinite;
+  }
+
+  /* On his feet. Faster than typing — a wave is a bigger, quicker motion. */
+  .px-fig-wave {
+    display: none;
+  }
+  .px-wave {
+    opacity: 0;
+    animation: px-frame4 0.44s steps(1, end) infinite;
+  }
+
+  /* display, not opacity: the packing group's opacity belongs to a
+     scroll-driven animation, and a plain declaration would lose to it. */
+  .px-stage[data-act="wave"] .px-fig-wave {
+    display: block;
+  }
+  .px-stage[data-act="wave"] .px-fig-type,
+  .px-stage[data-act="wave"] .px-fig-pack {
+    display: none;
+  }
+
+  /* Packing up is entirely scroll-driven, so the group is inert until the
+     no-preference + @supports block below switches it on. */
+  .px-fig-pack {
+    opacity: 0;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  TIME OF DAY                                                      */
+  /*  A wash over the finished scene. Re-rendering every layer at four  */
+  /*  times of day would have cost four times the PNGs — and most of    */
+  /*  the difference between noon and dusk really is a colour cast.     */
+  /* ---------------------------------------------------------------- */
+  .px-tint {
+    opacity: 0;
+    transition:
+      opacity 1.6s ease,
+      background-color 1.6s ease;
+  }
+  .px-stage[data-tod="dawn"] .px-tint {
+    opacity: 1;
+    background-image: linear-gradient(to bottom, rgb(255 176 122 / 0.32), rgb(255 214 170 / 0.14));
+  }
+  .px-stage[data-tod="dusk"] .px-tint {
+    opacity: 1;
+    background-image: linear-gradient(to bottom, rgb(255 132 74 / 0.34), rgb(120 62 128 / 0.26));
+  }
+  .px-stage[data-tod="night"] .px-tint {
+    opacity: 1;
+    background-image: linear-gradient(to bottom, rgb(16 30 72 / 0.62), rgb(10 20 52 / 0.48));
+  }
+
+  /* The bubble. Anchored by SceneStage; only the look lives here. */
+  .px-says {
+    max-width: min(20rem, 68vw);
+    animation: px-says-in 220ms ease-out both;
+  }
+  @keyframes px-says-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, calc(-100% + 0.375rem));
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .px-drift,
+    .px-grass,
+    .px-bough,
+    .px-body,
+    .px-head,
+    .px-nod,
+    .px-wave,
+    .px-dog,
+    .px-dogsit,
+    .px-dog-going,
+    .px-dog-stopped,
+    .px-dog-walk,
+    .px-says {
+      animation: none;
+      transform: none;
+    }
+    /* With the cycle stopped, the sitting dog would otherwise sit on top of
+       the walking one forever. Hold the walking frame. */
+    .px-dog-stopped {
+      opacity: 0;
+    }
+    .px-dog-going {
+      opacity: 1;
+    }
+    /* :first-of-type would match the sky image, not a frame. */
+    .px-frame-first {
+      opacity: 1;
+    }
+    /* The bubble still needs its anchoring transform — killing every
+       transform above would drop it on top of his head. */
+    .px-says {
+      transform: translate(-50%, -100%);
+    }
+    /* Turning his head is a discrete swap, not motion, so it survives
+       here: it is the one interaction that still reads with everything
+       else held still. The idle glance does not — that one is animation. */
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Navigation, reveal, scrollspy, depth                               */
+/*  ------------------------------------------------------------------ */
+/*  All of this is CSS-only — no observer, no client component, no       */
+/*  addition to the 138 B route JS.                                     */
+/*                                                                      */
+/*  IMPORTANT: scroll-driven animations IGNORE animation-duration, so    */
+/*  the global reduced-motion reset (which only zeroes duration) does    */
+/*  NOT stop them. Everything scroll-driven below is therefore authored  */
+/*  inside `prefers-reduced-motion: no-preference` — opting in, rather   */
+/*  than trying to opt out afterwards.                                   */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  :root {
+    /* One curve, used everywhere. Award-winning sites converge on a single
+       easing (Ross Mason ships easeOutCirc 205 times); that discipline is
+       most of why they read as coherent rather than assembled. */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Linear's asymmetry: hover states arrive instantly and leave slowly.
+       The single most transferable detail in their design system. */
+    --hover-in: 0s;
+    --hover-out: 0.16s;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  /* The nav underline means "you are here", not "you are hovering" —
+     hover is carried by the pill background instead. */
+  .navlink {
+    position: relative;
+  }
+  .navlink::after {
+    content: "";
+    position: absolute;
+    /* Inset by exactly the link's own padding (px-3.5, px-4 from sm up), so
+       the rule is the width of the label and nothing else — a short one under
+       "Contact", a long one under "Recognition". The old 0.9rem was a guess
+       that sat between the two paddings and overhung every label by ~3px. */
+    left: 0.875rem;
+    right: 0.875rem;
+    bottom: 0.3rem;
+    height: 1.5px;
+    border-radius: 2px;
+    background: rgb(4 120 87); /* emerald-700 */
+    scale: 0 1;
+    transform-origin: center;
+    transition: scale 0.24s var(--ease);
+  }
+  @media (min-width: 640px) {
+    .navlink::after {
+      left: 1rem;
+      right: 1rem;
+    }
+  }
+
+  /* Firefox has NOT shipped scroll-driven animations (flag-gated as of 153),
+     so ~15% of visitors never run the scrollspy below. Without this they get
+     no underline at all. :target covers the click case and :has() is at 93%,
+     so the fallback is genuinely broad. */
+  @supports not (animation-timeline: view()) {
+    .navlink:hover::after,
+    .navlink:focus-visible::after {
+      scale: 1 1;
+    }
+    body:has(#work:target) .navlink[href="#work"]::after,
+    body:has(#journey:target) .navlink[href="#journey"]::after,
+    body:has(#skills:target) .navlink[href="#skills"]::after,
+    body:has(#recognition:target) .navlink[href="#recognition"]::after,
+    body:has(#experience:target) .navlink[href="#experience"]::after,
+    body:has(#contact:target) .navlink[href="#contact"]::after {
+      scale: 1 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports ((animation-timeline: view()) and (animation-range: 0% 100%)) {
+      /* Each section publishes a timeline; timeline-scope hoists the names
+         to the root so the fixed nav — which is not an ancestor or a
+         descendant of the sections — can consume them. */
+      :root {
+        timeline-scope: --s-work, --s-journey, --s-skills, --s-recognition,
+          --s-experience, --s-contact;
+      }
+      #work {
+        view-timeline: --s-work block;
+      }
+      #journey {
+        view-timeline: --s-journey block;
+      }
+      #skills {
+        view-timeline: --s-skills block;
+      }
+      #recognition {
+        view-timeline: --s-recognition block;
+      }
+      #experience {
+        view-timeline: --s-experience block;
+      }
+      #contact {
+        view-timeline: --s-contact block;
+      }
+
+      /* The rule grows in as its section enters and fades out as it leaves.
+         Two animations rather than one keyframe set across `cover`, because
+         a `cover` range is unusable for the LAST section: the document runs
+         out of scroll while #contact is still on screen, so its timeline
+         never reached the middle of the range where full width lived, and
+         the Contact rule froze at about a third of its label — with
+         Experience stuck around two thirds for the same reason.
+
+         `entry` completes for every section, last one included, and `exit`
+         simply never runs for the last one — which is the behaviour you
+         want: at the foot of the page, Contact IS the section you are on. */
+      @keyframes navspy-in {
+        from {
+          scale: 0 1;
+        }
+        to {
+          scale: 1 1;
+        }
+      }
+      @keyframes navspy-out {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+      .navlink::after {
+        animation:
+          navspy-in linear both,
+          navspy-out linear both;
+        animation-duration: auto, auto;
+        /* Full width at 75% of entry, not 100%: on a viewport shorter than
+           the section, "fully entered" is never reached, and the rule would
+           be short again for exactly the reason above. */
+        animation-range:
+          entry 0% entry 75%,
+          exit 0% exit 100%;
+        transition: none; /* the timeline drives it now */
+      }
+      .navlink[href="#work"]::after {
+        animation-timeline: --s-work, --s-work;
+      }
+      .navlink[href="#journey"]::after {
+        animation-timeline: --s-journey, --s-journey;
+      }
+      .navlink[href="#skills"]::after {
+        animation-timeline: --s-skills, --s-skills;
+      }
+      .navlink[href="#recognition"]::after {
+        animation-timeline: --s-recognition, --s-recognition;
+      }
+      .navlink[href="#experience"]::after {
+        animation-timeline: --s-experience, --s-experience;
+      }
+      .navlink[href="#contact"]::after {
+        animation-timeline: --s-contact, --s-contact;
+      }
+
+      /* Section arrival — once per section header, never per card. Eight
+         staggered cards is the template cadence this is trying to avoid. */
+      /* Deliberately NOT a fade-up. Scroll-triggered upward travel is both
+         a documented cliché (since ~2014) and a real accessibility problem —
+         people report closing tabs from motion sickness caused by exactly
+         this. Settling down from a slight over-scale reads as coming into
+         focus, with no translation to trigger anyone. */
+      @keyframes section-in {
+        from {
+          opacity: 0;
+          scale: 1.012;
+        }
+        to {
+          opacity: 1;
+          scale: 1;
+        }
+      }
+      .reveal {
+        animation: section-in linear both;
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: entry 8% cover 20%;
+      }
+
+      /* Depth. The scene is already correctly z-ordered as a diorama, so
+         the only thing missing was parallax. Amplitude is deliberately
+         small — large parallax reads as 2019. */
+      @keyframes depth-far {
+        to {
+          transform: translate3d(0, 7%, 0);
+        }
+      }
+      @keyframes depth-mid {
+        to {
+          transform: translate3d(0, 4%, 0);
+        }
+      }
+      @keyframes depth-near {
+        to {
+          transform: translate3d(0, -1%, 0);
+        }
+      }
+      @keyframes depth-fore {
+        to {
+          transform: translate3d(0, -5%, 0);
+        }
+      }
+      /* animation-timeline is a reset-only sub-property of the `animation`
+         shorthand: written BEFORE it, it is silently reset to auto. Each
+         plane therefore carries its own complete shorthand, longhands after.
+         Duration is stated explicitly — a concrete duration on a progress
+         timeline is reinterpreted as a proportion of the range. */
+      .px-depth-far,
+      .px-depth-mid,
+      .px-depth-near,
+      .px-depth-fore {
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
+        animation-range: 0 100vh;
+        will-change: transform;
+      }
+      .px-depth-far {
+        animation: depth-far linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
+      }
+      .px-depth-mid {
+        animation: depth-mid linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
+      }
+      .px-depth-near {
+        animation: depth-near linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
+      }
+      .px-depth-fore {
+        animation: depth-fore linear both;
+        animation-duration: auto;
+        animation-timeline: scroll(root block);
+      }
+
+      /* ------------------------------------------------------------ */
+      /*  PACKING UP                                                   */
+      /*  He closes the laptop as the hero scrolls away. Scrubbed, not  */
+      /*  played: scroll back up and the lid opens again.               */
+      /*                                                                */
+      /*  Frame 0 of the packing set is deliberately identical to the   */
+      /*  typing pose, so the handover between the two groups has       */
+      /*  nothing to jump over.                                         */
+      /* ------------------------------------------------------------ */
+      @keyframes px-type-out {
+        0%,
+        18% {
+          opacity: 1;
+        }
+        30%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes px-pack-0 {
+        0%,
+        29.9% {
+          opacity: 1;
+        }
+        30%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes px-pack-1 {
+        0%,
+        29.9% {
+          opacity: 0;
+        }
+        30%,
+        54.9% {
+          opacity: 1;
+        }
+        55%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes px-pack-2 {
+        0%,
+        54.9% {
+          opacity: 0;
+        }
+        55%,
+        77.9% {
+          opacity: 1;
+        }
+        78%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes px-pack-3 {
+        0%,
+        77.9% {
+          opacity: 0;
+        }
+        78%,
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .px-fig-pack {
+        opacity: 1;
+      }
+      /* Same shorthand-then-longhand discipline as the depth planes:
+         animation-timeline is reset by the shorthand, so it follows it. */
+      .px-fig-type,
+      .px-pack-0,
+      .px-pack-1,
+      .px-pack-2,
+      .px-pack-3 {
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: exit 0% exit 72%;
+      }
+      .px-fig-type {
+        animation: px-type-out linear both;
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: exit 0% exit 72%;
+      }
+      .px-pack-0 {
+        animation: px-pack-0 steps(1, end) both;
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: exit 0% exit 72%;
+      }
+      .px-pack-1 {
+        animation: px-pack-1 steps(1, end) both;
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: exit 0% exit 72%;
+      }
+      .px-pack-2 {
+        animation: px-pack-2 steps(1, end) both;
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: exit 0% exit 72%;
+      }
+      .px-pack-3 {
+        animation: px-pack-3 steps(1, end) both;
+        animation-duration: auto;
+        animation-timeline: view();
+        animation-range: exit 0% exit 72%;
+      }
+    }
+  }
+
+  /* Reading focus: hovering or focusing one case card recedes the rest.
+     Pointer-only, so it never fires on touch where there is no hover. */
+  @media (hover: hover) {
+    /* Dim-the-siblings: reading focus by subtraction rather than by
+       highlight. Leaving is slower than arriving, so the grid settles back
+       rather than snapping. */
+    .workgrid article {
+      transition:
+        opacity var(--hover-out) var(--ease),
+        box-shadow var(--hover-out) var(--ease);
+    }
+    .workgrid:has(article:hover) article:not(:hover),
+    .workgrid:has(article:focus-within) article:not(:focus-within) {
+      opacity: 0.5;
+      transition-duration: var(--hover-in);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .workgrid article {
+      transition: none;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Print — recruiters print portfolios and forward the PDF            */
+/* ------------------------------------------------------------------ */
+@media print {
+  .fixed,
+  header[class*="min-h-"] {
+    display: none !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  section {
+    break-inside: avoid;
+    padding: 1rem 0 !important;
+  }
+  article,
+  li {
+    break-inside: avoid;
+  }
+  a[href^="http"]::after,
+  a[href^="mailto"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555;
+  }
+  .workgrid,
+  .grid {
+    display: block !important;
+  }
+  * {
+    animation: none !important;
+    box-shadow: none !important;
+    color: #111 !important;
+    background: #fff !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Micro-interactions                                                 */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  /* Every pressable acknowledges the press. 160ms, transform only. */
+  @media (hover: hover) and (pointer: fine) {
+    .pressable {
+      transition: transform 0.16s var(--ease);
+    }
+    .pressable:active {
+      transform: scale(0.97);
+    }
+  }
+
+  /* The chevron becomes an arrow: the stem fades in as the tip slides.
+     Entirely CSS, driven by custom-property inheritance from the link. */
+  .arrow {
+    --arrow-tip: none;
+    --arrow-line: 0;
+    stroke-width: 1.75;
+    fill: none;
+    stroke: currentColor;
+    margin-left: 0.4em;
+  }
+  .arrow .arrow-line {
+    opacity: var(--arrow-line);
+    transition: opacity 0.15s var(--ease);
+  }
+  .arrow .arrow-tip {
+    transform: var(--arrow-tip);
+    transition: transform 0.15s var(--ease);
+  }
+  a:hover .arrow,
+  a:focus-visible .arrow {
+    --arrow-line: 1;
+    --arrow-tip: translateX(2.5px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pressable,
+    .arrow .arrow-line,
+    .arrow .arrow-tip {
+      transition: none;
+    }
+    .pressable:active {
+      transform: none;
+    }
   }
 }

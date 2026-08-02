@@ -75,7 +75,7 @@ export function Terminal({ onExit }: { onExit: () => void }) {
         break;
       case "resume":
       case "cv":
-        print("Opening résumé…");
+        print("Opening Resume…");
         window.open(profile.resumeUrl, "_blank");
         break;
       case "github":
